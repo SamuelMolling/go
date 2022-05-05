@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello galera")
+	fmt.Println(GetRandInt(1, 123456))
+	fmt.Println(GetRandFloat(14.44, 15.55))
 }
