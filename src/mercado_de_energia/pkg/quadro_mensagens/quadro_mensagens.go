@@ -1,41 +1,33 @@
-// Numero máximo de mensagens do quadro
-#define MAXMSG	8
+package quadromensagens
+
 	
 // Variável Status da Mensagem, utilizada para controlar o quadro
+type MsgStatus int
+
 const (
-	Livre 	int = 0
-	Oferta		= 1
-	Proposta	= 2	
-	Aceite		= 3
-	Recusa		= 4
-			
+	Livre 	int = 0 // mensagem está livre para ser utilizada
+	Oferta		= 1 // oferta é postada pelo fornecedor
+	Proposta	= 2	// Comprador estabelece uma proposta de compra
+	Aceite		= 3 // Comprador aceita a proposta
+	Recusa		= 4	// Comprador nao aceita a proposta	
 )
 
-type MsgStatus enum {Livre=0,	// mensagem está livre para ser utilizada
-		Oferta=1,	// oferta é postada pelo fornecedor
-   	    Proposta=2, // Comprador estabelece uma proposta de compra
-	    Aceite=3,	// Comprador aceita a proposta
-	    Recusa=4	// Comprador nao aceita a proposta
-} 
-
 // Estrutura de mensagens
-typedef struct {    
-int          Fornecedor; // Código do fornecedor
-double       pVenda;     // preco do kWh
-double       CapForn;    // capacidade de fornecimento, em kWh
-int          Comprador;   // codigo do comprador
-double 	     DemSolic;   // Demanda solicitada para contrato
-MsgStatus    Status;	   // status da negociação
-}MsgMerc; 
-
+type MsgMerc struct {    
+		CodigoFornecedor		int 		// Código do fornecedor
+		PrecoVenda				float64 	// preco do kWh
+		CapacidadeFornecimento	float64 	// capacidade de fornecimento, em kWh
+		CodigoComprador			int 		// codigo do comprador
+		DemandaSolicitada		float64 	// Demanda solicitada para contrato
+		Status					MsgStatus	// status da negociação
+}
 	      
 // Estrutura do quadro de mensagens
-typedef struct{
-MsgMerc	Msg[MAXMSG];
-int	MsgAtual;
-}QMsg;	
+type QuadroMsg struct {
+		MsgMerc		Msg // Numero máximo de mensagens do quadro
+		MsgAtual	int //mensagem atual
+}	
 
-// Prototipos de funcoes
 // Inicialização da estrutura de dados
 void inicQMsg(QMsg *);
 
