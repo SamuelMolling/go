@@ -10,7 +10,7 @@ type Efornecedor struct {
 	Id                int     // id
 	PrecoDesejavel    float64 // preco desejavel
 	MenorPreco        float64 // menor preco admissivel
-	CapacidadeCarga   float64 // capacidade de carga
+	CapacidadeCarga   float64 // capacidade de armazenamento
 	EnergiaGerada     float64 // energia gerada
 	Energia_Fornecida float64 // energia fornecida
 	Demanda_Interna   float64 // demanda interna
@@ -20,7 +20,7 @@ type Efornecedor struct {
 // Inicialização da estrutura de dados
 func (c *Efornecedor) Inicia_Efornecedor() *Efornecedor {
 
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
 	c.PrecoDesejavel = GetRandFloat(500, 1000)
 	c.MenorPreco = GetRandFloat(100, 500)
 	c.CapacidadeCarga = GetRandFloat(100, 200)
