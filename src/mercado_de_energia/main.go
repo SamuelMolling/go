@@ -82,8 +82,10 @@ func main() {
 			}
 		case 3:
 			screen.Clear()
+			//go
 			//CRIAR THREADS AQUI
 			fmt.Println("Iniciando simulação...")
+
 			//qmsg.InicializaQmsg()
 		case 0:
 			screen.Clear()

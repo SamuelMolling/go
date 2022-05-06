@@ -1,5 +1,7 @@
 package quadromensagens
 
+import "fmt"
+
 // Variável Status da Mensagem, utilizada para controlar o quadro
 type MsgStatus int
 
@@ -33,10 +35,10 @@ func (c *QuadroMsg) InicializaQmsg() {
 
 }
 
-// Aponta para proxima mensagem livre
 // retorna com o indice da mensagem
 //int livreQMsg(QMsg *);
-func (c *QuadroMsg) livreQMsg() {
+func (c *QuadroMsg) livreQMsg() int {
+	return c.MsgAtual
 }
 
 // Aponta para a proxima mensagem
@@ -50,5 +52,5 @@ func (c *QuadroMsg) proxQMsg() int {
 //Imprime quadro de mensagens
 //func printQMsg(QMsg *) return string;
 func (c *QuadroMsg) GetQmsg() {
-	//
+	fmt.Println(c.Mensagem)
 }
