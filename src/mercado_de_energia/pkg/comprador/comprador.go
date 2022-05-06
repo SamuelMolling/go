@@ -10,5 +10,6 @@ type EConsumidor struct {
 // Inicialização da estrutura de dados
 void inicia_struct_EConsumidor(struct_EConsumidor *, int)
 
+
 //Atualiza tA
 void atualiza_pa(struct_EConsumidor *, double, double, double)

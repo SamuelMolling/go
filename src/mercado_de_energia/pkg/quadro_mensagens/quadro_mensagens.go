@@ -40,4 +40,6 @@ int livreQMsg(QMsg *);
 int proxQMsg(QMsg *);
 
 //Imprime quadro de mensagens
-void printQMsg(QMsg *);
+func printQMsg(QMsg *) return string;
+
+
