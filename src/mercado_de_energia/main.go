@@ -83,13 +83,8 @@ func main() {
 		case 3:
 			screen.Clear()
 			//CRIAR THREADS AQUI
-			fmt.Println("\n###########################")
-			fmt.Println("Dados dos consumidores")
-			fmt.Println("#############################")
-			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor1.Id, fornecedor1.CapacidadeCarga, fornecedor1.EnergiaGerada, fornecedor1.Energia_Fornecida, fornecedor1.MenorPreco, fornecedor1.Demanda_Interna, fornecedor1.PrecoDesejavel)
-			fmt.Printf("\n\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor2.Id, fornecedor2.CapacidadeCarga, fornecedor2.EnergiaGerada, fornecedor2.Energia_Fornecida, fornecedor2.MenorPreco, fornecedor2.Demanda_Interna, fornecedor2.PrecoDesejavel)
-			fmt.Printf("\n\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor3.Id, fornecedor3.CapacidadeCarga, fornecedor3.EnergiaGerada, fornecedor3.Energia_Fornecida, fornecedor3.MenorPreco, fornecedor3.Demanda_Interna, fornecedor3.PrecoDesejavel)
-
+			fmt.Println("Iniciando simulação...")
+			//qmsg.InicializaQmsg()
 		case 0:
 			screen.Clear()
 			fmt.Print("\nEncerrando o Mercado de Energia...\n")

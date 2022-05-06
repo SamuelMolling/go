@@ -29,14 +29,26 @@ type QuadroMsg struct {
 
 // Inicialização da estrutura de dados
 //void inicQMsg(QMsg *);
+func (c *QuadroMsg) InicializaQmsg() {
+
+}
 
 // Aponta para proxima mensagem livre
 // retorna com o indice da mensagem
 //int livreQMsg(QMsg *);
+func (c *QuadroMsg) livreQMsg() {
+}
 
 // Aponta para a proxima mensagem
 // retorna com o indice da mensagem
 //int proxQMsg(QMsg *);
+func (c *QuadroMsg) proxQMsg() int {
+
+	return 1
+}
 
 //Imprime quadro de mensagens
 //func printQMsg(QMsg *) return string;
+func (c *QuadroMsg) GetQmsg() {
+	//
+}
