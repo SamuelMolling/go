@@ -46,12 +46,39 @@ func main() {
 			valida_existencia := consumidor1.Demanda
 			if valida_existencia == 0 {
 				fmt.Println("ERRO: Consumidor ainda não cadastrado")
+				fmt.Println("Cadastrar dados Consumidor 1:")
+				fmt.Print("Prazo de contrato do Consumidor [s]:")
+				valor := setValores()
+				consumidor1.PrazoContrato = valor
+				fmt.Print("Demanda Consumidor [kW]:")
+				valor = setValores()
+				consumidor1.Demanda = valor
+				fmt.Print("Máximo preço admissível [R$/kW]:")
+				valor = setValores()
+				consumidor1.PrecoMaximo = valor
+				fmt.Print("Tarifa desejável [R$/kW]:")
+				valor = setValores()
+				consumidor1.TarifaDesejavel = valor
+				fmt.Println("\nCadastrar dados Consumidor 2:")
+				fmt.Print("Prazo de contrato do Consumidor [s]:")
+				valor = setValores()
+				consumidor2.PrazoContrato = valor
+				fmt.Print("Demanda Consumidor [kW]:")
+				valor = setValores()
+				consumidor2.Demanda = valor
+				fmt.Print("Máximo preço admissível [R$/kW]:")
+				valor = setValores()
+				consumidor2.PrecoMaximo = valor
+				fmt.Print("Tarifa desejável [R$/kW]:")
+				valor = setValores()
+				consumidor2.TarifaDesejavel = valor
+
 			} else {
 				fmt.Println("\n###########################")
 				fmt.Println("Dados dos consumidores")
 				fmt.Println("#############################")
-				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor: %.2f\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor1.Id, consumidor1.PrazoContrato, consumidor1.Demanda, consumidor1.PrecoMaximo, consumidor1.TarifaDesejavel)
-				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor: %.2f\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor2.Id, consumidor2.PrazoContrato, consumidor2.Demanda, consumidor2.PrecoMaximo, consumidor2.TarifaDesejavel)
+				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %.2f\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor1.Id, consumidor1.PrazoContrato, consumidor1.Demanda, consumidor1.PrecoMaximo, consumidor1.TarifaDesejavel)
+				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %.2f\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor2.Id, consumidor2.PrazoContrato, consumidor2.Demanda, consumidor2.PrecoMaximo, consumidor2.TarifaDesejavel)
 			}
 		case 3:
 			screen.Clear()
@@ -104,4 +131,11 @@ func leComando() int {
 	fmt.Scan(&comandoLido)
 	fmt.Println("")
 	return comandoLido
+}
+
+func setValores() float64 {
+	var valor float64
+	fmt.Scan(&valor)
+	fmt.Println("")
+	return valor
 }
