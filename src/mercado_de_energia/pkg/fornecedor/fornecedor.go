@@ -26,16 +26,15 @@ func (c *Efornecedor) Inicia_Efornecedor() *Efornecedor {
 	c.CapacidadeCarga = GetRandFloat(100, 200)
 	c.EnergiaGerada = GetRandFloat(5000, 10000)
 	//c.Energia_Fornecida = c.EnergiaGerada - c.
-	c.Demanda_Interna = GetRandFloat(0, 1000)
+	c.Demanda_Interna = GetRandFloat(1000, 1500)
 	c.FazOferta = 0
 	return c
 }
 
 // Atualizacao do pD
 //void atualiza_pd(struct_Efornecedor *, double, double, double)
-func (c *Efornecedor) AtualizaPrecoDesejavel() float64 {
-	c.PrecoDesejavel = GetRandFloat(500, 1000)
-	return c.PrecoDesejavel
+func (c *Efornecedor) AtualizaPrecoDesejavel() {
+	c.PrecoDesejavel = (c.MenorPreco * 0.07) / 100
 }
 
 //Gerador de num aleatorios float

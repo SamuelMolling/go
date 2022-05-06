@@ -1,11 +1,5 @@
 package comprador
 
-import (
-	"math/rand"
-	"mercado_de_energia/pkg/fornecedor"
-	"time"
-)
-
 type EConsumidor struct {
 	Id              int     //id
 	TarifaDesejavel float64 // tarifa desejavel
@@ -17,16 +11,15 @@ type EConsumidor struct {
 // Inicialização da estrutura de dados
 func (c *EConsumidor) Inicia_EConsumidor() *EConsumidor {
 
-	rand.Seed(time.Now().Unix())
-	c.TarifaDesejavel = fornecedor.GetRandFloat(500, 700)
-	c.PrecoMaximo = fornecedor.GetRandFloat(500, 800)
-	c.PrazoContrato = fornecedor.GetRandFloat(1, 4)
-	c.Demanda = fornecedor.GetRandFloat(500, 1000)
+	// rand.Seed(time.Now().Unix())
+	// c.TarifaDesejavel = fornecedor.GetRandFloat(500, 700)
+	// c.PrecoMaximo = fornecedor.GetRandFloat(500, 800)
+	// c.PrazoContrato = fornecedor.GetRandFloat(1, 4)
+	// c.Demanda = fornecedor.GetRandFloat(500, 1000)
 	return c
 }
 
 func (c *EConsumidor) AtualizaPA() {
-	//validar
 
 }
 
