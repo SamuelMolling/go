@@ -145,5 +145,5 @@ func printDate() {
 }
 
 func printThreads(action string, id int) {
-	fmt.Printf("Philosopher #%d is %s\n", id+1, action)
+	fmt.Printf("Thread #%d is %s\n", id+1, action)
 }
