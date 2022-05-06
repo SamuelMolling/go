@@ -34,7 +34,8 @@ func (c *Efornecedor) Inicia_Efornecedor() *Efornecedor {
 // Atualizacao do pD
 //void atualiza_pd(struct_Efornecedor *, double, double, double)
 func (c *Efornecedor) AtualizaPrecoDesejavel() {
-	c.PrecoDesejavel = (c.MenorPreco * 0.07) / 100
+	c.MenorPreco -= (c.MenorPreco * 0.07)
+	c.PrecoDesejavel = c.MenorPreco
 }
 
 //Gerador de num aleatorios float

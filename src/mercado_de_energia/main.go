@@ -5,6 +5,7 @@ import (
 	"mercado_de_energia/pkg/comprador"
 	"mercado_de_energia/pkg/fornecedor"
 	"os"
+	"time"
 
 	screen "github.com/inancgumus/screen"
 )
@@ -82,6 +83,7 @@ func main() {
 			}
 		case 3:
 			screen.Clear()
+			printDate()
 			//go
 			//CRIAR THREADS AQUI
 			fmt.Println("Iniciando simulação...")
@@ -135,4 +137,13 @@ func setValores() float64 {
 	fmt.Scan(&valor)
 	fmt.Println("")
 	return valor
+}
+
+func printDate() {
+	currentTime := time.Now()
+	fmt.Println(currentTime.Format("02/01/2006 15:04:05"))
+}
+
+func printThreads(action string, id int) {
+	fmt.Printf("Philosopher #%d is %s\n", id+1, action)
 }
