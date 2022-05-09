@@ -63,8 +63,9 @@ func main() {
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
 			} else {
+
 				printDate()
-				//go
+				//go consumidor1.AtualizaPA.AtualizaPA()
 				//CRIAR THREADS AQUI
 				fmt.Println("Iniciando simulação...")
 
@@ -83,7 +84,7 @@ func main() {
 	}
 }
 
-func exibeIntroducao() {
+func exibeIntroducao() { //Função para exibir informações de introdução
 	titulo := "Mercado de Energia"
 	disciplina := "Interfaceamento e Drivers"
 	versao := 1.0
@@ -97,7 +98,7 @@ func exibeIntroducao() {
 	fmt.Println("Programa na versão: ", versao)
 }
 
-func exibeMenu() {
+func exibeMenu() { //Função para exibir opções do menu
 	fmt.Println("1 - Mostrar dados dos fornecedores")
 	fmt.Println("2 - Mostrar dados dos consumidores")
 	fmt.Println("3 - Executar simulação")
@@ -105,18 +106,20 @@ func exibeMenu() {
 	fmt.Print("\nOpção: ")
 }
 
-func leComando() int {
+func leComando() int { //Função para salvar a opção desejada do menu
 	var comandoLido int
 	fmt.Scan(&comandoLido)
 	fmt.Println("")
 	return comandoLido
 }
 
-func printDate() {
+func printDate() { //Função para print data e hora atual
 	currentTime := time.Now()
 	fmt.Println(currentTime.Format("02/01/2006 15:04:05"))
 }
 
+//Teste para print de threads
 func printThreads(action string, id int) {
-	fmt.Printf("Thread #%d is %s\n", id+1, action)
+	//fmt.Println("Thread",, "Execução em: ")
+	printDate()
 }

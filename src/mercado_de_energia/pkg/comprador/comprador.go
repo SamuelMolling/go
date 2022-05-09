@@ -2,6 +2,7 @@ package comprador
 
 import (
 	"fmt"
+	"math"
 )
 
 type EConsumidor struct {
@@ -29,9 +30,11 @@ func (c *EConsumidor) Inicia_EConsumidor() {
 	c.TarifaDesejavel = valor
 }
 
-func (c *EConsumidor) AtualizaPA() {
+func (c *EConsumidor) AtualizaPA() { //Atualiza preço máximo, caso o prazo esteja acabando
 	if c.PrazoContrato <= 15 {
 		c.PrecoMaximo += (c.PrecoMaximo * 0.22)
+	} else {
+		c.TarifaDesejavel = math.Exp2(c.TarifaDesejavel)
 	}
 }
 
@@ -40,6 +43,11 @@ func setValores() float64 {
 	fmt.Scan(&valor)
 	fmt.Println("")
 	return valor
+}
+
+func (c *EConsumidor) AtualizaDemanda(demanda_contratada float64) float64 { //Atualiza a demanda geral quando uma demanda for contratada
+	c.Demanda -= demanda_contratada
+	return c.Demanda
 }
 
 //Atualiza tA

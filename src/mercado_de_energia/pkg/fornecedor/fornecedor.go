@@ -17,9 +17,7 @@ type Efornecedor struct {
 	FazOferta         int     //variavel que indica se fornecedor fez uma oferta (se ==1)
 }
 
-// Inicialização da estrutura de dados
-func (c *Efornecedor) Inicia_Efornecedor() {
-
+func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de dados
 	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
 	c.PrecoDesejavel = GetRandFloat(500, 1000)
 	c.MenorPreco = GetRandFloat(100, 500)
@@ -30,14 +28,12 @@ func (c *Efornecedor) Inicia_Efornecedor() {
 	c.FazOferta = 0
 }
 
-// Atualizacao do pD
 //void atualiza_pd(struct_Efornecedor *, double, double, double)
-func (c *Efornecedor) AtualizaPrecoDesejavel() {
+func (c *Efornecedor) AtualizaPrecoDesejavel() { // Atualizacao do pD
 	c.MenorPreco -= (c.MenorPreco * 0.07)
 	c.PrecoDesejavel = c.MenorPreco
 }
 
-//Gerador de num aleatorios float
-func GetRandFloat(min, max float64) float64 {
+func GetRandFloat(min, max float64) float64 { //Gerador de num aleatorios float
 	return min + rand.Float64()*(max-min)
 }

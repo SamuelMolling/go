@@ -34,24 +34,29 @@ type QuadroMsg struct {
 // Inicialização da estrutura de dados
 //void inicQMsg(QMsg *);
 func (c *QuadroMsg) InicializaQmsg() {
-
+	c.MsgAtual = 1
 }
 
-// retorna com o indice da mensagem
 //int livreQMsg(QMsg *);
-func (c *QuadroMsg) livreQMsg() int {
+func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem
 	return c.MsgAtual
 }
 
-// Aponta para a proxima mensagem
-// retorna com o indice da mensagem
-//int proxQMsg(QMsg *);
-func (c *QuadroMsg) proxQMsg() int {
-	return c.MsgAtual
+func (c *QuadroMsg) proxQMsg() int { // Aponta para a proxima mensagem
+	proxQMsg := c.LivreQMsg() + 1
+	return proxQMsg
 }
 
-//Imprime quadro de mensagens
-//func printQMsg(QMsg *) return string;
-func (c *QuadroMsg) GetQmsg() {
-	fmt.Println(c.Mensagem)
+//FAZER RETURN STRING
+func (c *QuadroMsg) PrintQMsg() { //Imprime quadro de mensagens
+	fmt.Println(c.Mensagem[8])
+}
+
+func (c *MsgMerc) AtualizaDemandaQuadro(id int) {
+	if c.Status == 3 {
+		id = c.CodigoComprador //Validar necessidade
+		//consumidor := consumidor.Efornecedor{Id: 1}
+		//consumidor := "consumidor" + strconv.Itoa(id)
+
+	}
 }
