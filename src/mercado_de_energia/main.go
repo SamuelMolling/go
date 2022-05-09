@@ -14,28 +14,28 @@ func main() {
 
 	screen.Clear()
 
-	exibeIntroducao()
+	exibeIntroducao() //exibe informacões de introdução
 
-	fornecedor1 := fornecedor.Efornecedor{Id: 1}
-	fornecedor1.Inicia_Efornecedor()
-	fornecedor2 := fornecedor.Efornecedor{Id: 2}
-	fornecedor2.Inicia_Efornecedor()
-	fornecedor3 := fornecedor.Efornecedor{Id: 3}
-	fornecedor3.Inicia_Efornecedor()
+	fornecedor1 := fornecedor.Efornecedor{Id: 1} //vincula o fornecedor1 como id 1
+	fornecedor1.Inicia_Efornecedor()             //Inicia os valores do fornecedor
+	fornecedor2 := fornecedor.Efornecedor{Id: 2} //vincula o fornecedor2 como id 2
+	fornecedor2.Inicia_Efornecedor()             //Inicia os valores do fornecedor
+	fornecedor3 := fornecedor.Efornecedor{Id: 3} //vincula o fornecedor3 como id 3
+	fornecedor3.Inicia_Efornecedor()             //Inicia os valores do fornecedor
 
-	consumidor1 := comprador.EConsumidor{Id: 1}
-	consumidor2 := comprador.EConsumidor{Id: 2}
+	consumidor1 := comprador.EConsumidor{Id: 1} //vincula o consumidor1 como id 1
+	consumidor2 := comprador.EConsumidor{Id: 2} //vincula o consumidor2 como id 2
 
 	for {
 		fmt.Println("\n\n ############# Bem-vindo ao Mercado de Energia! #############")
 
-		exibeMenu()
-		comando := leComando()
+		exibeMenu()            //Exibe o menu de opções
+		comando := leComando() //grava a opção digitada
 
 		switch comando {
 		case 1:
 			screen.Clear()
-			fmt.Println("\n###########################")
+			fmt.Println("###########################")
 			fmt.Println("Dados dos fornecedores")
 			fmt.Println("#############################")
 			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor1.Id, fornecedor1.CapacidadeCarga, fornecedor1.EnergiaGerada, fornecedor1.Energia_Fornecida, fornecedor1.MenorPreco, fornecedor1.Demanda_Interna, fornecedor1.PrecoDesejavel)
@@ -44,7 +44,7 @@ func main() {
 
 		case 2:
 			screen.Clear()
-			valida_existencia := consumidor1.Demanda
+			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
 			if valida_existencia == 0 {
 				fmt.Println("ERRO: Consumidor ainda não cadastrado")
 				fmt.Println("Cadastrar dados Consumidor 1:")
@@ -75,7 +75,7 @@ func main() {
 				consumidor2.TarifaDesejavel = valor
 
 			} else {
-				fmt.Println("\n###########################")
+				fmt.Println("###########################")
 				fmt.Println("Dados dos consumidores")
 				fmt.Println("#############################")
 				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %.2f\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor1.Id, consumidor1.PrazoContrato, consumidor1.Demanda, consumidor1.PrecoMaximo, consumidor1.TarifaDesejavel)
@@ -89,15 +89,15 @@ func main() {
 			fmt.Println("Iniciando simulação...")
 
 			//qmsg.InicializaQmsg()
-		case 0:
+		case 0: //Encerra o programa
 			screen.Clear()
-			fmt.Print("\nEncerrando o Mercado de Energia...\n")
+			fmt.Print("Encerrando o Mercado de Energia...\n")
 			fmt.Println("Bye!")
 			os.Exit(0)
-		default:
+		default: //Caso nenhum dos comandos acima seja selecionado, ele retorna um erro
 			screen.Clear()
-			fmt.Println("Não conheço este comando")
-			os.Exit(0)
+			fmt.Println("ERROR: command not found")
+			os.Exit(-1)
 		}
 	}
 
