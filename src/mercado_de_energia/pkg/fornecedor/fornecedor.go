@@ -46,7 +46,12 @@ func (c *Efornecedor) WorkFornecedor(ctx context.Context, q quadromensagens.Quad
 		case <-ctx.Done():
 			return
 		default:
-			time.Sleep(1)
+			quadro := quadromensagens.MsgMerc{}
+			if quadro.DemandaSolicitada <= c.CapacidadeCarga && quadro.PrecoVenda <= c.PrecoDesejavel {
+				quadro.Status = quadromensagens.Oferta
+				quadro.CodigoFornecedor = c.Id
+				quadro.CapacidadeFornecimento = c.CapacidadeCarga
+			}
 			//get do quadro e validar valores e comprar e atualizar o quadro novamente
 		}
 	}

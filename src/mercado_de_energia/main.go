@@ -68,7 +68,7 @@ func main() {
 				fmt.Println("Iniciando simulação...")
 				quadro := quadromensagens.QuadroMsg{}
 				quadro.InicializaQmsg()
-				ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+				ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
 				go consumidor1.WorkConsumidor(ctx, quadro)
 				go consumidor2.WorkConsumidor(ctx, quadro)
@@ -129,7 +129,7 @@ func printDate() { //Função para print data e hora atual
 }
 
 //Teste para print de threads
-func printThreads(action string, id int) {
-	//fmt.Println("Thread",, "Execução em: ")
+func PrintThreads(action string, id int) {
+	fmt.Println("Thread" + "Execução em: ")
 	printDate()
 }

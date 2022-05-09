@@ -34,11 +34,10 @@ type MsgMerc struct {
 	Status                 MsgStatus // status da negociação
 }
 
-// Estrutura do quadro de mensagens
-type QuadroMsg struct {
-	Mensagem []MsgMerc // Numero máximo de mensagens do quadro
-	MsgAtual int       //mensagem atual
-	MuRW     *sync.RWMutex
+type QuadroMsg struct { // Estrutura do quadro de mensagens
+	Mensagem []MsgMerc     // Numero máximo de mensagens do quadro
+	MsgAtual int           //mensagem atual
+	MuRW     *sync.RWMutex //Criar mutex de scrita e leitura
 }
 
 func (c *QuadroMsg) InicializaQmsg() { // Inicialização da estrutura de dados
@@ -46,8 +45,7 @@ func (c *QuadroMsg) InicializaQmsg() { // Inicialização da estrutura de dados
 	c.MuRW = new(sync.RWMutex)
 }
 
-//int livreQMsg(QMsg *);
-func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem
+func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem atual
 	return c.MsgAtual
 }
 
