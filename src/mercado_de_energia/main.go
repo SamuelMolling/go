@@ -12,6 +12,7 @@ import (
 
 func main() {
 
+	//var forkWGo sync.WaitGroup
 	screen.Clear()
 
 	exibeIntroducao() //exibe informacões de introdução
@@ -63,11 +64,16 @@ func main() {
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
 			} else {
+				fmt.Println("Iniciando simulação...")
+				for i := 0; i < 120; i++ {
+					//forkWGo.Add(1)
+					//go
 
-				printDate()
+				}
+
+				//printDate()
 				//go consumidor1.AtualizaPA.AtualizaPA()
 				//CRIAR THREADS AQUI
-				fmt.Println("Iniciando simulação...")
 
 				//qmsg.InicializaQmsg()
 			}
