@@ -41,7 +41,6 @@ func main() {
 			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor1.Id, fornecedor1.CapacidadeCarga, fornecedor1.EnergiaGerada, fornecedor1.Energia_Fornecida, fornecedor1.MenorPreco, fornecedor1.Demanda_Interna, fornecedor1.PrecoDesejavel)
 			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor2.Id, fornecedor2.CapacidadeCarga, fornecedor2.EnergiaGerada, fornecedor2.Energia_Fornecida, fornecedor2.MenorPreco, fornecedor2.Demanda_Interna, fornecedor2.PrecoDesejavel)
 			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor3.Id, fornecedor3.CapacidadeCarga, fornecedor3.EnergiaGerada, fornecedor3.Energia_Fornecida, fornecedor3.MenorPreco, fornecedor3.Demanda_Interna, fornecedor3.PrecoDesejavel)
-
 		case 2:
 			screen.Clear()
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
@@ -49,7 +48,6 @@ func main() {
 				fmt.Println("ERRO: Consumidor ainda não cadastrado")
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
-
 			} else {
 				fmt.Println("###########################")
 				fmt.Println("Dados dos consumidores")
@@ -83,7 +81,6 @@ func main() {
 			os.Exit(-1)
 		}
 	}
-
 }
 
 func exibeIntroducao() {
