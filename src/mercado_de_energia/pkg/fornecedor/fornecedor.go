@@ -18,17 +18,16 @@ type Efornecedor struct {
 }
 
 // Inicialização da estrutura de dados
-func (c *Efornecedor) Inicia_Efornecedor() *Efornecedor {
+func (c *Efornecedor) Inicia_Efornecedor() {
 
 	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
 	c.PrecoDesejavel = GetRandFloat(500, 1000)
 	c.MenorPreco = GetRandFloat(100, 500)
-	c.CapacidadeCarga = GetRandFloat(100, 200)
+	c.CapacidadeCarga = c.EnergiaGerada - c.Demanda_Interna - c.Energia_Fornecida //GetRandFloat(100, 200)
 	c.EnergiaGerada = GetRandFloat(5000, 10000)
 	//c.Energia_Fornecida = c.EnergiaGerada - c.
 	c.Demanda_Interna = GetRandFloat(1000, 1500)
 	c.FazOferta = 0
-	return c
 }
 
 // Atualizacao do pD

@@ -1,5 +1,9 @@
 package comprador
 
+import (
+	"fmt"
+)
+
 type EConsumidor struct {
 	Id              int     //id
 	TarifaDesejavel float64 // tarifa desejavel
@@ -9,18 +13,33 @@ type EConsumidor struct {
 }
 
 // Inicialização da estrutura de dados
-func (c *EConsumidor) Inicia_EConsumidor() *EConsumidor {
-
-	// rand.Seed(time.Now().Unix())
-	// c.TarifaDesejavel = fornecedor.GetRandFloat(500, 700)
-	// c.PrecoMaximo = fornecedor.GetRandFloat(500, 800)
-	// c.PrazoContrato = fornecedor.GetRandFloat(1, 4)
-	// c.Demanda = fornecedor.GetRandFloat(500, 1000)
-	return c
+func (c *EConsumidor) Inicia_EConsumidor() {
+	fmt.Printf("\nCadastrar dados Consumidor: %d\n", c.Id)
+	fmt.Print("Prazo de contrato do Consumidor [s]:")
+	valor := setValores()
+	c.PrazoContrato = valor
+	fmt.Print("Demanda Consumidor [kW]:")
+	valor = setValores()
+	c.Demanda = valor
+	fmt.Print("Máximo preço admissível [R$/kW]:")
+	valor = setValores()
+	c.PrecoMaximo = valor
+	fmt.Print("Tarifa desejável [R$/kW]:")
+	valor = setValores()
+	c.TarifaDesejavel = valor
 }
 
 func (c *EConsumidor) AtualizaPA() {
+	if c.PrazoContrato <= 15 {
+		c.PrecoMaximo += (c.PrecoMaximo * 0.22)
+	}
+}
 
+func setValores() float64 {
+	var valor float64
+	fmt.Scan(&valor)
+	fmt.Println("")
+	return valor
 }
 
 //Atualiza tA

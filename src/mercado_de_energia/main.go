@@ -47,32 +47,8 @@ func main() {
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
 			if valida_existencia == 0 {
 				fmt.Println("ERRO: Consumidor ainda não cadastrado")
-				fmt.Println("Cadastrar dados Consumidor 1:")
-				fmt.Print("Prazo de contrato do Consumidor [s]:")
-				valor := setValores()
-				consumidor1.PrazoContrato = valor
-				fmt.Print("Demanda Consumidor [kW]:")
-				valor = setValores()
-				consumidor1.Demanda = valor
-				fmt.Print("Máximo preço admissível [R$/kW]:")
-				valor = setValores()
-				consumidor1.PrecoMaximo = valor
-				fmt.Print("Tarifa desejável [R$/kW]:")
-				valor = setValores()
-				consumidor1.TarifaDesejavel = valor
-				fmt.Println("\nCadastrar dados Consumidor 2:")
-				fmt.Print("Prazo de contrato do Consumidor [s]:")
-				valor = setValores()
-				consumidor2.PrazoContrato = valor
-				fmt.Print("Demanda Consumidor [kW]:")
-				valor = setValores()
-				consumidor2.Demanda = valor
-				fmt.Print("Máximo preço admissível [R$/kW]:")
-				valor = setValores()
-				consumidor2.PrecoMaximo = valor
-				fmt.Print("Tarifa desejável [R$/kW]:")
-				valor = setValores()
-				consumidor2.TarifaDesejavel = valor
+				consumidor1.Inicia_EConsumidor()
+				consumidor2.Inicia_EConsumidor()
 
 			} else {
 				fmt.Println("###########################")
@@ -83,12 +59,19 @@ func main() {
 			}
 		case 3:
 			screen.Clear()
-			printDate()
-			//go
-			//CRIAR THREADS AQUI
-			fmt.Println("Iniciando simulação...")
+			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
+			if valida_existencia == 0 {
+				fmt.Println("ERRO: Consumidor ainda não cadastrado")
+				consumidor1.Inicia_EConsumidor()
+				consumidor2.Inicia_EConsumidor()
+			} else {
+				printDate()
+				//go
+				//CRIAR THREADS AQUI
+				fmt.Println("Iniciando simulação...")
 
-			//qmsg.InicializaQmsg()
+				//qmsg.InicializaQmsg()
+			}
 		case 0: //Encerra o programa
 			screen.Clear()
 			fmt.Print("Encerrando o Mercado de Energia...\n")
@@ -130,13 +113,6 @@ func leComando() int {
 	fmt.Scan(&comandoLido)
 	fmt.Println("")
 	return comandoLido
-}
-
-func setValores() float64 {
-	var valor float64
-	fmt.Scan(&valor)
-	fmt.Println("")
-	return valor
 }
 
 func printDate() {
