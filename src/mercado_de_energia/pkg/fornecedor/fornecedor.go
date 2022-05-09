@@ -19,8 +19,8 @@ type Efornecedor struct {
 
 func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de dados
 	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
-	c.PrecoDesejavel = GetRandFloat(500, 1000)
-	c.MenorPreco = GetRandFloat(100, 500)
+	c.PrecoDesejavel = GetRandFloat(100, 200)
+	c.MenorPreco = GetRandFloat(50, 100)
 	c.CapacidadeCarga = c.EnergiaGerada - c.Demanda_Interna - c.Energia_Fornecida //GetRandFloat(100, 200)
 	c.EnergiaGerada = GetRandFloat(5000, 10000)
 	//c.Energia_Fornecida = c.EnergiaGerada - c.
