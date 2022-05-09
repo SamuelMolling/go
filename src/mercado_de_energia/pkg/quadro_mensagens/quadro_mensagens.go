@@ -16,7 +16,7 @@ const (
 	Recusa                    // Comprador nao aceita a proposta
 )
 
-var m = map[MsgStatus]string{
+var m = map[MsgStatus]string{ //map para tornar string
 	Livre:    "Livre",
 	Oferta:   "Oferta",
 	Proposta: "Proposta",

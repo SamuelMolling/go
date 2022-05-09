@@ -58,16 +58,16 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 		case <-ctx.Done():
 			return
 		default:
-			quadro := quadromensagens.MsgMerc{}
-			quadro.CodigoComprador = c.Id
-			quadro.DemandaSolicitada = c.Demanda
-			quadro.Status = quadromensagens.Proposta
-			q.MuRW.Lock()
+			quadro := quadromensagens.MsgMerc{}      //Cria uma variável tipo quadro
+			quadro.CodigoComprador = c.Id            //Vincula o id de um comprador
+			quadro.DemandaSolicitada = c.Demanda     //Vincula uma demanda de um comprador
+			quadro.Status = quadromensagens.Proposta //Vincula uma proposta de um comprador
+			q.MuRW.Lock()                            //Cria um lock mutex de Read e Write
 			//q.Mensagem = append(q.Mensagem[:q.LivreQMsg()], q.Mensagem[q.ProxQMsg():]...) //Elimina a mensagem atual caso ela esteja livre
 			if len(q.Mensagem) < 8 { //valida se o tamanho do array é menor que 8
-				q.Mensagem = append(q.Mensagem, quadro)
+				q.Mensagem = append(q.Mensagem, quadro) //Cria a mensagem, caso seja menor que 8
 			}
-			q.MuRW.Unlock()
+			q.MuRW.Unlock() //Desbloqueia o Mutex
 		}
 	}
 }
