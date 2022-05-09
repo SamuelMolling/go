@@ -2,6 +2,7 @@ package quadromensagens
 
 import (
 	"fmt"
+	"sync"
 )
 
 // Variável Status da Mensagem, utilizada para controlar o quadro
@@ -14,6 +15,14 @@ const (
 	Aceite                    // Comprador aceita a proposta
 	Recusa                    // Comprador nao aceita a proposta
 )
+
+var m = map[MsgStatus]string{
+	Livre:    "Livre",
+	Oferta:   "Oferta",
+	Proposta: "Proposta",
+	Aceite:   "Aceite",
+	Recusa:   "Recusa",
+}
 
 // Estrutura de mensagens
 type MsgMerc struct {
@@ -29,12 +38,12 @@ type MsgMerc struct {
 type QuadroMsg struct {
 	Mensagem []MsgMerc // Numero máximo de mensagens do quadro
 	MsgAtual int       //mensagem atual
+	MuRW     *sync.RWMutex
 }
 
-// Inicialização da estrutura de dados
-//void inicQMsg(QMsg *);
-func (c *QuadroMsg) InicializaQmsg() {
-	c.MsgAtual = 1
+func (c *QuadroMsg) InicializaQmsg() { // Inicialização da estrutura de dados
+	c.Mensagem = make([]MsgMerc, 8)
+	c.MuRW = new(sync.RWMutex)
 }
 
 //int livreQMsg(QMsg *);
@@ -42,21 +51,19 @@ func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem
 	return c.MsgAtual
 }
 
-func (c *QuadroMsg) proxQMsg() int { // Aponta para a proxima mensagem
+func (c *QuadroMsg) ProxQMsg() int { // Aponta para a proxima mensagem
 	proxQMsg := c.LivreQMsg() + 1
 	return proxQMsg
 }
 
-//FAZER RETURN STRING
 func (c *QuadroMsg) PrintQMsg() { //Imprime quadro de mensagens
-	fmt.Println(c.Mensagem[8])
-}
-
-func (c *MsgMerc) AtualizaDemandaQuadro(id int) {
-	if c.Status == 3 {
-		id = c.CodigoComprador //Validar necessidade
-		//consumidor := consumidor.Efornecedor{Id: 1}
-		//consumidor := "consumidor" + strconv.Itoa(id)
-
+	fmt.Printf("\n--------------------")
+	for i := 0; i < 8; i++ {
+		fmt.Printf("\n%s de energia", m[c.Mensagem[i].Status])
+		fmt.Printf("\nQuadro %d", c.LivreQMsg())
+		fmt.Printf("\nComprador %d", c.Mensagem[i].CodigoComprador)
+		fmt.Printf("\nDemanda solicitada %.2f", c.Mensagem[i].DemandaSolicitada)
+		fmt.Printf("\nComprador %d", c.Mensagem[i].Status)
+		fmt.Printf("\n--------------------")
 	}
 }

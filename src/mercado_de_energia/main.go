@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"mercado_de_energia/pkg/comprador"
 	"mercado_de_energia/pkg/fornecedor"
+	quadromensagens "mercado_de_energia/pkg/quadro_mensagens"
 	"os"
 	"time"
 
@@ -12,7 +14,6 @@ import (
 
 func main() {
 
-	//var forkWGo sync.WaitGroup
 	screen.Clear()
 
 	exibeIntroducao() //exibe informacões de introdução
@@ -65,17 +66,20 @@ func main() {
 				consumidor2.Inicia_EConsumidor()
 			} else {
 				fmt.Println("Iniciando simulação...")
-				for i := 0; i < 120; i++ {
-					//forkWGo.Add(1)
-					//go
+				quadro := quadromensagens.QuadroMsg{}
+				quadro.InicializaQmsg()
+				ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 
-				}
-
+				go consumidor1.WorkConsumidor(ctx, quadro)
+				go consumidor2.WorkConsumidor(ctx, quadro)
+				go fornecedor1.WorkFornecedor(ctx, quadro)
+				go fornecedor2.WorkFornecedor(ctx, quadro)
+				go fornecedor3.WorkFornecedor(ctx, quadro)
+				<-ctx.Done()
+				quadro.PrintQMsg()
 				//printDate()
-				//go consumidor1.AtualizaPA.AtualizaPA()
 				//CRIAR THREADS AQUI
 
-				//qmsg.InicializaQmsg()
 			}
 		case 0: //Encerra o programa
 			screen.Clear()
