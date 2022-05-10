@@ -47,7 +47,7 @@ func main() {
 			screen.Clear()
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
 			if valida_existencia == 0 {
-				fmt.Println("ERRO: Consumidor ainda não cadastrado")
+				fmt.Println("ERRO: Consumidor ainda não cadastrado!!!!\n\n")
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
 			} else {
@@ -61,7 +61,7 @@ func main() {
 			screen.Clear()
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
 			if valida_existencia == 0 {
-				fmt.Println("ERRO: Consumidor ainda não cadastrado")
+				fmt.Println("ERRO: Consumidor ainda não cadastrado!!!!\n\n")
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
 			} else {
@@ -77,8 +77,6 @@ func main() {
 				go fornecedor3.WorkFornecedor(ctx, quadro)
 				<-ctx.Done()
 				quadro.PrintQMsg()
-				//printDate()
-				//CRIAR THREADS AQUI
 
 			}
 		case 0: //Encerra o programa
@@ -121,15 +119,4 @@ func leComando() int { //Função para salvar a opção desejada do menu
 	fmt.Scan(&comandoLido)
 	fmt.Println("")
 	return comandoLido
-}
-
-func printDate() { //Função para print data e hora atual
-	currentTime := time.Now()
-	fmt.Println(currentTime.Format("02/01/2006 15:04:05"))
-}
-
-//Teste para print de threads
-func PrintThreads(action string, id int) {
-	fmt.Println("Thread" + "Execução em: ")
-	printDate()
 }

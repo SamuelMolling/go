@@ -2,6 +2,7 @@ package fornecedor
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	quadromensagens "mercado_de_energia/pkg/quadro_mensagens"
 	"time"
@@ -48,6 +49,7 @@ func (c *Efornecedor) WorkFornecedor(ctx context.Context, q quadromensagens.Quad
 		default:
 			quadro := quadromensagens.MsgMerc{}
 			mensagem := quadromensagens.QuadroMsg{}
+			go PrintThreads(mensagem.MsgAtual)
 			if quadro.DemandaSolicitada <= c.CapacidadeCarga && quadro.PrecoVenda <= c.PrecoDesejavel {
 				quadro.Status = quadromensagens.Oferta
 				quadro.CodigoFornecedor = c.Id
@@ -63,4 +65,14 @@ func (c *Efornecedor) WorkFornecedor(ctx context.Context, q quadromensagens.Quad
 			//get do quadro e validar valores e comprar e atualizar o quadro novamente
 		}
 	}
+}
+
+//Teste para print de threads
+func PrintThreads(id int) {
+	fmt.Printf("\nThread %d Execução em: ", id)
+	printDate()
+}
+func printDate() { //Função para print data e hora atual
+	currentTime := time.Now()
+	fmt.Println(currentTime.Format("02/01/2006 15:04:05"))
 }

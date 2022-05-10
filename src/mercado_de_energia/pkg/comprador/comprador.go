@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	quadromensagens "mercado_de_energia/pkg/quadro_mensagens"
+	"time"
 )
 
 type EConsumidor struct {
@@ -16,7 +17,9 @@ type EConsumidor struct {
 
 // Inicialização da estrutura de dados
 func (c *EConsumidor) Inicia_EConsumidor() {
-	fmt.Printf("\nCadastrar dados Consumidor: %d\n", c.Id)
+	fmt.Println("###########################")
+	fmt.Printf("Cadastrar dados Consumidor: %d\n", c.Id)
+	fmt.Println("###########################\n")
 	fmt.Print("Prazo de contrato do Consumidor [s]:")
 	valor := setValores()
 	c.PrazoContrato = valor
@@ -69,4 +72,39 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 			q.MuRW.Unlock() //Desbloqueia o Mutex
 		}
 	}
+}
+
+func (c *EConsumidor) WorkConsumidorAceitaRecusa(ctx context.Context, q quadromensagens.QuadroMsg) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			mensagem := quadromensagens.QuadroMsg{}
+			quadro := quadromensagens.MsgMerc{} //Cria uma variável tipo quadro
+			for i := 0; i < 8; i++ {
+				go PrintThreads(mensagem.ProxQMsg())
+
+				if quadro.Status == quadromensagens.Oferta {
+					if quadro.PrecoVenda <= c.PrecoMaximo {
+						quadro.Status = quadromensagens.Aceite
+						mensagem.PrintQMsg()
+					} else {
+						quadro.Status = quadromensagens.Recusa
+						mensagem.PrintQMsg()
+					}
+				}
+			}
+		}
+	}
+}
+
+//Teste para print de threads
+func PrintThreads(id int) {
+	fmt.Printf("\nThread %d Execução em: ", id)
+	printDate()
+}
+func printDate() { //Função para print data e hora atual
+	currentTime := time.Now()
+	fmt.Println(currentTime.Format("02/01/2006 15:04:05"))
 }
