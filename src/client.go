@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	memory "github.com/mackerelio/go-osstat/memory"
 )
 
-func CreateClient() {
+func main() {
 
 	conexao, erro1 := net.Dial("tcp", "127.0.0.1:50001") //Testa conexão
 	if erro1 != nil {
