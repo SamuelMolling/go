@@ -11,7 +11,7 @@ import (
 var count = 0
 
 func handleConnection(c net.Conn) {
-	fmt.Print("SERVIDOR:\n")
+	fmt.Print("Servidor:")
 	for {
 		netData, err := bufio.NewReader(c).ReadString('\n')
 		if err != nil {

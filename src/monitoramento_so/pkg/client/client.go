@@ -19,12 +19,12 @@ func CreateClient() {
 	}
 
 	for {
-		total_memory := createMetricsMemory()                //Cria metricas
-		user_cpu, system_cpu, idle_cpu := createMetricsCpu() //Cria metricas
+		total_memory := createMetricsMemory() //Cria metricas
 
 		total_memory_message := fmt.Sprintf("Memory Total: %dGB\n", total_memory/1000000000)
 		fmt.Fprintf(conexao, total_memory_message) //Envia pela conexao TCP a mensagem
 
+		user_cpu, system_cpu, idle_cpu := createMetricsCpu() //Cria metricas
 		var user_cpu_message string = fmt.Sprintf("CPU User: %.2f%%\n", user_cpu)
 		fmt.Fprintf(conexao, user_cpu_message) //Envia pela conexao TCP a mensagem
 
