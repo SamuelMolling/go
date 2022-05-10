@@ -51,17 +51,22 @@ func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem atual
 
 func (c *QuadroMsg) ProxQMsg() int { // Aponta para a proxima mensagem
 	proxQMsg := c.LivreQMsg() + 1
+	if proxQMsg == 8 {
+		proxQMsg = 0
+	}
 	return proxQMsg
 }
 
 func (c *QuadroMsg) PrintQMsg() { //Imprime quadro de mensagens
 	fmt.Printf("\n--------------------")
 	for i := 0; i < 8; i++ {
-		fmt.Printf("\n%s de energia", m[c.Mensagem[i].Status])
-		fmt.Printf("\nQuadro %d", c.LivreQMsg())
-		fmt.Printf("\nComprador %d", c.Mensagem[i].CodigoComprador)
-		fmt.Printf("\nDemanda solicitada %.2f", c.Mensagem[i].DemandaSolicitada)
-		fmt.Printf("\nComprador %d", c.Mensagem[i].Status)
-		fmt.Printf("\n--------------------")
+		if m[c.Mensagem[i].Status] != "Livre" {
+			fmt.Printf("\n%s de energia", m[c.Mensagem[i].Status])
+			fmt.Printf("\nQuadro %d", c.LivreQMsg())
+			fmt.Printf("\nComprador %d", c.Mensagem[i].CodigoComprador)
+			fmt.Printf("\nDemanda solicitada %.2f", c.Mensagem[i].DemandaSolicitada)
+			fmt.Printf("\nComprador %d", c.Mensagem[i].Status)
+			fmt.Printf("\n--------------------")
+		}
 	}
 }

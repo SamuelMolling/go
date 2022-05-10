@@ -47,10 +47,18 @@ func (c *Efornecedor) WorkFornecedor(ctx context.Context, q quadromensagens.Quad
 			return
 		default:
 			quadro := quadromensagens.MsgMerc{}
+			mensagem := quadromensagens.QuadroMsg{}
 			if quadro.DemandaSolicitada <= c.CapacidadeCarga && quadro.PrecoVenda <= c.PrecoDesejavel {
 				quadro.Status = quadromensagens.Oferta
 				quadro.CodigoFornecedor = c.Id
 				quadro.CapacidadeFornecimento = c.CapacidadeCarga
+				q.MuRW.Lock()
+				if len(q.Mensagem) < 8 { //valida se o tamanho do array é menor que 8
+					q.Mensagem = append(q.Mensagem, quadro)
+					mensagem.PrintQMsg() //Cria a mensagem, caso seja menor que 8
+				}
+				q.MuRW.Unlock() //Desbloqueia o Mutex
+
 			}
 			//get do quadro e validar valores e comprar e atualizar o quadro novamente
 		}
