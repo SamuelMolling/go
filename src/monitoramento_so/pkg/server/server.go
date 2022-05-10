@@ -11,7 +11,7 @@ import (
 var count = 0
 
 func handleConnection(c net.Conn) {
-	fmt.Print("Servidor:")
+	fmt.Print("Mensagens recebidas no Servidor:\n")
 	for {
 		netData, err := bufio.NewReader(c).ReadString('\n')
 		if err != nil {
@@ -20,14 +20,10 @@ func handleConnection(c net.Conn) {
 		}
 
 		temp := strings.TrimSpace(string(netData))
-		if temp == "STOP" {
-			break
-		}
 		fmt.Println(temp)
 		counter := strconv.Itoa(count) + "\n"
 		c.Write([]byte(string(counter)))
 	}
-	c.Close()
 }
 
 func CreateServer() {

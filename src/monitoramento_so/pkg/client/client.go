@@ -19,32 +19,34 @@ func CreateClient() {
 	}
 
 	for {
-		total_memory := createMetricsMemory() //Cria metricas
-
-		total_memory_message := fmt.Sprintf("Memory Total: %dGB\n", total_memory/1000000000)
-		fmt.Fprintf(conexao, total_memory_message) //Envia pela conexao TCP a mensagem
-
+		total_memory, used_memory := createMetricsMemory()   //Cria metricas
 		user_cpu, system_cpu, idle_cpu := createMetricsCpu() //Cria metricas
-		var user_cpu_message string = fmt.Sprintf("CPU User: %.2f%%\n", user_cpu)
-		fmt.Fprintf(conexao, user_cpu_message) //Envia pela conexao TCP a mensagem
 
-		var system_cpu_message string = fmt.Sprintf("CPU System: %.2f%%\n", system_cpu)
-		fmt.Fprintf(conexao, system_cpu_message) //Envia pela conexao TCP a mensagem
+		user_cpu_message := fmt.Sprintf("CPU User: %.2f%%\n", user_cpu)
+		system_cpu_message := fmt.Sprintf("CPU System: %.2f%%\n", system_cpu)
+		idle_cpu_message := fmt.Sprintf("CPU Idle: %.2f%%\n", idle_cpu)
+		total_memory_message := fmt.Sprintf("Memory Total: %dGB\n", total_memory/1000000000)
+		used_memory_message := fmt.Sprintf("memory used: %d bytes\n", used_memory/1000000000)
 
-		var idle_cpu_message string = fmt.Sprintf("CPU Idle: %.2f%%\n", idle_cpu)
-		fmt.Fprintf(conexao, idle_cpu_message) //Envia pela conexao TCP a mensagem
+		fmt.Fprintf(conexao, total_memory_message) //Envia pela conexao TCP a mensagem
+		fmt.Fprintf(conexao, used_memory_message)  //Envia pela conexao TCP a mensagem
+		fmt.Fprintf(conexao, idle_cpu_message)     //Envia pela conexao TCP a mensagem
+		fmt.Fprintf(conexao, system_cpu_message)   //Envia pela conexao TCP a mensagem
+		fmt.Fprintf(conexao, user_cpu_message)     //Envia pela conexao TCP a mensagem
+
 	}
 
 }
 
-func createMetricsMemory() uint64 { //Create metrics of Memory
+func createMetricsMemory() (uint64, uint64) { //Create metrics of Memory
 	memory, err := memory.Get()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(-1)
 	}
 	total_memory := memory.Total
-	return total_memory
+	used_memory := memory.Used
+	return total_memory, used_memory
 }
 
 func createMetricsCpu() (float64, float64, float64) { //Create metrics of Cpu

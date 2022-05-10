@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"monitoramento_so/pkg/client"
 	"monitoramento_so/pkg/server"
 	"time"
@@ -9,8 +10,12 @@ import (
 
 func main() {
 
-	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
-	go server.CreateServer()
-	go client.CreateClient()
-	<-ctx.Done()
+	ctx, err := context.WithTimeout(context.Background(), 20*time.Second)
+	if err == nil {
+		fmt.Println(err)
+	} else {
+		go server.CreateServer()
+		go client.CreateClient()
+		<-ctx.Done()
+	}
 }
