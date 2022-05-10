@@ -23,7 +23,7 @@ func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de 
 	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
 	c.PrecoDesejavel = GetRandFloat(100, 200)
 	c.MenorPreco = GetRandFloat(50, 100)
-	c.CapacidadeCarga = c.EnergiaGerada - c.Demanda_Interna //- c.Energia_Fornecida //GetRandFloat(100, 200)
+	c.CapacidadeCarga = c.EnergiaGerada - c.Demanda_Interna
 	c.EnergiaGerada = GetRandFloat(5000, 10000)
 	c.Energia_Fornecida = 0
 	c.Demanda_Interna = GetRandFloat(1000, 1500)

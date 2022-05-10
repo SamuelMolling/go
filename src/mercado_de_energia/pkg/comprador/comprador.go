@@ -3,7 +3,6 @@ package comprador
 import (
 	"context"
 	"fmt"
-	"math"
 	quadromensagens "mercado_de_energia/pkg/quadro_mensagens"
 )
 
@@ -33,10 +32,10 @@ func (c *EConsumidor) Inicia_EConsumidor() {
 }
 
 func (c *EConsumidor) AtualizaPA() { //Atualiza preço máximo, caso o prazo esteja acabando
-	if c.PrazoContrato <= 15 {
+	if c.PrazoContrato <= 5 {
 		c.PrecoMaximo += (c.PrecoMaximo * 0.22)
 	} else {
-		c.TarifaDesejavel = math.Exp2(c.TarifaDesejavel)
+		c.TarifaDesejavel += 0.05
 	}
 }
 
