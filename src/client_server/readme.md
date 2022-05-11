@@ -3,4 +3,4 @@ Autores: Gustavo, Lucas e Samuel
 
 Versão Go 1.18.1
 
-<img src=".Server_Client_Workflow.jpg" alt="Workflow"/>
+<img src="Server_Client_Workflow.jpg" alt="Workflow"/>
