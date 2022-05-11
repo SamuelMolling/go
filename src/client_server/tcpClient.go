@@ -45,7 +45,7 @@ func main() {
 				fmt.Fprintf(conexao, texto[3]+"\n")
 				break
 			case 4:
-				texto[4] = fmt.Sprintf("memory used: %d bytes\n", used_memory/1000000000)
+				texto[4] = fmt.Sprintf("memory used: %dGB\n", used_memory/1000000000)
 				fmt.Fprintf(conexao, texto[4]+"\n")
 				break
 			}
