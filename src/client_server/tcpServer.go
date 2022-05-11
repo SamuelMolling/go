@@ -9,29 +9,29 @@ import (
 
 func main() {
 
-	l, err := net.Listen("tcp", ":1234")
-	if err != nil {
-		fmt.Println(err)
+	l, err := net.Listen("tcp", ":1234") //Listen na porta 1234, usando protocolo tcp
+	if err != nil {                      //valida se não deu erro
+		fmt.Println(err) //printa o erro caso dê erro
 		return
 	}
-	defer l.Close()
+	defer l.Close() //fecha a validação
 
-	c, err := l.Accept()
-	if err != nil {
-		fmt.Println(err)
+	c, err := l.Accept() //Aceita conexões
+	if err != nil {      //valida se não deu erro
+		fmt.Println(err) //printa o erro caso dê erro
 		return
 	}
 
-	for {
-		netData, err := bufio.NewReader(c).ReadString('\n')
-		if err != nil {
-			fmt.Println(err)
+	for { //for infinito
+		netData, err := bufio.NewReader(c).ReadString('\n') //recebe conexão
+		if err != nil {                                     //valida se não deu erro
+			fmt.Println(err) //printa o erro caso dê erro
 			return
 		}
 
-		fmt.Print("Message Receive -> ", string(netData))
-		t := time.Now()
+		fmt.Print("Message Receive -> ", string(netData)) //escreve a mensagem recebida pelo cliente
+		t := time.Now()                                   //monta o timestamp da mensagem recebida
 		myTime := t.Format(time.RFC3339) + "\n"
-		c.Write([]byte(myTime))
+		c.Write([]byte(myTime)) //manda mensagem para o cliente com o timestamp
 	}
 }

@@ -13,14 +13,13 @@ import (
 
 func main() {
 
-	conexao, err := net.Dial("tcp", "127.0.0.1:1234")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
 	for {
 
+		conexao, err := net.Dial("tcp", "127.0.0.1:1234") //Monta a conexão
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 		var texto [5]string
 		for i := 0; i < 5; i++ {
 
