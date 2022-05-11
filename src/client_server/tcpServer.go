@@ -4,19 +4,12 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	"os"
 	"time"
 )
 
 func main() {
-	arguments := os.Args
-	if len(arguments) == 1 {
-		fmt.Println("Please provide port number")
-		return
-	}
 
-	PORT := ":" + arguments[1]
-	l, err := net.Listen("tcp", PORT)
+	l, err := net.Listen("tcp", ":1234")
 	if err != nil {
 		fmt.Println(err)
 		return
