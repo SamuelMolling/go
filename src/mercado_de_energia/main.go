@@ -14,7 +14,7 @@ import (
 
 func main() {
 
-	screen.Clear()
+	screen.Clear() //limpa tela
 
 	exibeIntroducao() //exibe informacões de introdução
 

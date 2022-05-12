@@ -24,11 +24,16 @@ func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de 
 	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
 	c.PrecoDesejavel = GetRandFloat(100, 200)
 	c.MenorPreco = GetRandFloat(50, 100)
-	c.CapacidadeCarga = c.EnergiaGerada - c.Demanda_Interna
 	c.EnergiaGerada = GetRandFloat(5000, 10000)
 	c.Energia_Fornecida = 0
 	c.Demanda_Interna = GetRandFloat(1000, 1500)
+	c.CapacidadeCarga = c.EnergiaGerada - c.Demanda_Interna
 	c.FazOferta = 0
+}
+
+func (c *Efornecedor) AtualizaCapacidaDeCarga(energia_fornecida float64) { // Atualizacao do pD
+	c.CapacidadeCarga -= energia_fornecida
+	c.Energia_Fornecida += energia_fornecida
 }
 
 //void atualiza_pd(struct_Efornecedor *, double, double, double)
