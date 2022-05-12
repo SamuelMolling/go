@@ -70,14 +70,14 @@ func main() {
 				quadro.InicializaQmsg()
 				ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-				go consumidor1.WorkConsumidor(ctx, quadro)
-				go consumidor2.WorkConsumidor(ctx, quadro)
-				go fornecedor1.WorkFornecedor(ctx, quadro)
-				go fornecedor2.WorkFornecedor(ctx, quadro)
-				go fornecedor3.WorkFornecedor(ctx, quadro)
+				go consumidor1.WorkConsumidorCriaProposta(ctx, quadro)
+				go consumidor2.WorkConsumidorCriaProposta(ctx, quadro)
+				go fornecedor1.WorkFornecedorOferta(ctx, quadro)
+				go fornecedor2.WorkFornecedorOferta(ctx, quadro)
+				go fornecedor3.WorkFornecedorOferta(ctx, quadro)
+				go consumidor1.WorkConsumidorAceitaRecusa(ctx, quadro)
+				go consumidor2.WorkConsumidorAceitaRecusa(ctx, quadro)
 				<-ctx.Done()
-				quadro.PrintQMsg()
-
 			}
 		case 0: //Encerra o programa
 			screen.Clear()

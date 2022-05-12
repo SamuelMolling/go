@@ -54,22 +54,23 @@ func (c *EConsumidor) AtualizaDemanda(demanda_contratada float64) float64 { //At
 	return c.Demanda
 }
 
-func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.QuadroMsg) {
+func (c *EConsumidor) WorkConsumidorCriaProposta(ctx context.Context, q quadromensagens.QuadroMsg) {
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		default:
-			quadro := quadromensagens.MsgMerc{}      //Cria uma variável tipo quadro
-			quadro.CodigoComprador = c.Id            //Vincula o id de um comprador
-			quadro.DemandaSolicitada = c.Demanda     //Vincula uma demanda de um comprador
-			quadro.Status = quadromensagens.Proposta //Vincula uma proposta de um comprador
-			q.MuRW.Lock()                            //Cria um lock mutex de Read e Write
-			//q.Mensagem = append(q.Mensagem[:q.LivreQMsg()], q.Mensagem[q.ProxQMsg():]...) //Elimina a mensagem atual caso ela esteja livre
-			if len(q.Mensagem) < 8 { //valida se o tamanho do array é menor que 8
-				q.Mensagem = append(q.Mensagem, quadro) //Cria a mensagem, caso seja menor que 8
+			quadro := quadromensagens.MsgMerc{} //Cria uma variável tipo quadro
+			for i := 0; i < 8; i++ {
+				quadro.CodigoComprador = c.Id            //Vincula o id de um comprador
+				quadro.DemandaSolicitada = c.Demanda     //Vincula uma demanda de um comprador
+				quadro.Status = quadromensagens.Proposta //Vincula uma proposta de um comprador
+				q.MuRW.Lock()                            //Cria um lock mutex de Read e Write
+				if len(q.Mensagem) < 8 {                 //valida se o tamanho do array é menor que 8
+					q.Mensagem = append(q.Mensagem, quadro) //Cria a mensagem, caso seja menor que 8
+				}
+				q.MuRW.Unlock() //Desbloqueia o Mutex
 			}
-			q.MuRW.Unlock() //Desbloqueia o Mutex
 		}
 	}
 }
@@ -83,15 +84,17 @@ func (c *EConsumidor) WorkConsumidorAceitaRecusa(ctx context.Context, q quadrome
 			mensagem := quadromensagens.QuadroMsg{}
 			quadro := quadromensagens.MsgMerc{} //Cria uma variável tipo quadro
 			for i := 0; i < 8; i++ {
-				go PrintThreads(mensagem.ProxQMsg())
-
+				go PrintThreads(c.Id)
 				if quadro.Status == quadromensagens.Oferta {
 					if quadro.PrecoVenda <= c.PrecoMaximo {
 						quadro.Status = quadromensagens.Aceite
 						mensagem.PrintQMsg()
+						mensagem.InicializaQmsg() //inicializa caso seja recusa
+						go PrintThreads(c.Id)
 					} else {
 						quadro.Status = quadromensagens.Recusa
 						mensagem.PrintQMsg()
+						mensagem.InicializaQmsg() //inicializa caso seja recusa
 					}
 				}
 			}

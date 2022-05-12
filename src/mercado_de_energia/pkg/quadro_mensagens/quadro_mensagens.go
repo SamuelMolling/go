@@ -65,7 +65,7 @@ func (c *QuadroMsg) PrintQMsg() { //Imprime quadro de mensagens
 			fmt.Printf("\nQuadro %d", c.LivreQMsg())
 			fmt.Printf("\nComprador %d", c.Mensagem[i].CodigoComprador)
 			fmt.Printf("\nDemanda solicitada %.2f", c.Mensagem[i].DemandaSolicitada)
-			fmt.Printf("\nComprador %d", c.Mensagem[i].Status)
+			fmt.Printf("\nStatus %d", c.Mensagem[i].Status)
 			fmt.Printf("\n--------------------")
 		}
 	}
