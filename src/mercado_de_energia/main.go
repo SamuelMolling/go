@@ -10,6 +10,7 @@ import (
 	"time"
 
 	screen "github.com/inancgumus/screen"
+	"github.com/jedib0t/go-pretty/v6/table"
 )
 
 func main() {
@@ -40,9 +41,9 @@ func main() {
 			fmt.Println("###########################")
 			fmt.Println("Dados dos fornecedores")
 			fmt.Println("#############################")
-			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor1.Id, fornecedor1.CapacidadeCarga, fornecedor1.EnergiaGerada, fornecedor1.Energia_Fornecida, fornecedor1.MenorPreco, fornecedor1.Demanda_Interna, fornecedor1.PrecoDesejavel)
-			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor2.Id, fornecedor2.CapacidadeCarga, fornecedor2.EnergiaGerada, fornecedor2.Energia_Fornecida, fornecedor2.MenorPreco, fornecedor2.Demanda_Interna, fornecedor2.PrecoDesejavel)
-			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor3.Id, fornecedor3.CapacidadeCarga, fornecedor3.EnergiaGerada, fornecedor3.Energia_Fornecida, fornecedor3.MenorPreco, fornecedor3.Demanda_Interna, fornecedor3.PrecoDesejavel)
+			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor1.Id, fornecedor1.CapacidadeCarga, fornecedor1.EnergiaGerada, fornecedor1.EnergiaFornecida, fornecedor1.MenorPreco, fornecedor1.DemandaInterna, fornecedor1.PrecoDesejavel)
+			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor2.Id, fornecedor2.CapacidadeCarga, fornecedor2.EnergiaGerada, fornecedor2.EnergiaFornecida, fornecedor2.MenorPreco, fornecedor2.DemandaInterna, fornecedor2.PrecoDesejavel)
+			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor3.Id, fornecedor3.CapacidadeCarga, fornecedor3.EnergiaGerada, fornecedor3.EnergiaFornecida, fornecedor3.MenorPreco, fornecedor3.DemandaInterna, fornecedor3.PrecoDesejavel)
 		case 2:
 			screen.Clear()
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
@@ -54,8 +55,8 @@ func main() {
 				fmt.Println("###########################")
 				fmt.Println("Dados dos consumidores")
 				fmt.Println("#############################")
-				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %.2f\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor1.Id, consumidor1.PrazoContrato, consumidor1.Demanda, consumidor1.PrecoMaximo, consumidor1.TarifaDesejavel)
-				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %.2f\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor2.Id, consumidor2.PrazoContrato, consumidor2.Demanda, consumidor2.PrecoMaximo, consumidor2.TarifaDesejavel)
+				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %d\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor1.Id, consumidor1.PrazoContrato, consumidor1.Demanda, consumidor1.PrecoMaximo, consumidor1.TarifaDesejavel)
+				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %d\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor2.Id, consumidor2.PrazoContrato, consumidor2.Demanda, consumidor2.PrecoMaximo, consumidor2.TarifaDesejavel)
 			}
 		case 3:
 			screen.Clear()
@@ -68,15 +69,23 @@ func main() {
 				fmt.Println("Iniciando simulação...")
 				quadro := quadromensagens.QuadroMsg{}
 				quadro.InicializaQmsg()
-				ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+				ctx, _ := context.WithTimeout(context.Background(), 120*time.Second)
+				go func() {
+					for {
+						printDbg(
+							quadro,
+							[]comprador.EConsumidor{consumidor1, consumidor2},
+							[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
+						time.Sleep(1 * time.Second)
+					}
+				}()
 
-				go consumidor1.WorkConsumidorCriaProposta(ctx, quadro)
-				go consumidor2.WorkConsumidorCriaProposta(ctx, quadro)
+				go consumidor1.WorkConsumidor(ctx, quadro)
+				go consumidor2.WorkConsumidor(ctx, quadro)
 				go fornecedor1.WorkFornecedorOferta(ctx, quadro)
 				go fornecedor2.WorkFornecedorOferta(ctx, quadro)
 				go fornecedor3.WorkFornecedorOferta(ctx, quadro)
-				go consumidor1.WorkConsumidorAceitaRecusa(ctx, quadro)
-				go consumidor2.WorkConsumidorAceitaRecusa(ctx, quadro)
+
 				<-ctx.Done()
 			}
 		case 0: //Encerra o programa
@@ -90,6 +99,43 @@ func main() {
 			os.Exit(-1)
 		}
 	}
+}
+
+func printDbg(quadro quadromensagens.QuadroMsg, consumidores []comprador.EConsumidor, fornecedores []fornecedor.Efornecedor) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+
+	t.AppendHeader(table.Row{"Id", "Prazo de Contrato", "Demanda", "Preço Máximo", "Tarifa Desejável", "Oferta Aberta"})
+	for _, consumidor := range consumidores {
+		t.AppendRow([]interface{}{consumidor.Id, consumidor.PrazoContrato, consumidor.Demanda, consumidor.PrecoMaximo, consumidor.TarifaDesejavel, consumidor.OfertaAberta})
+	}
+
+	t.Render()
+
+	t = table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+
+	t.AppendHeader(table.Row{"Id", "Capacidade de Carga", "Energia Gerada", "Energia Fornecida", "Demanda Interna", "Preço Desejável", "Faz Oferta"})
+	for _, fornecedor := range fornecedores {
+		t.AppendRow([]interface{}{fornecedor.Id, fornecedor.CapacidadeCarga, fornecedor.EnergiaGerada, fornecedor.EnergiaFornecida, fornecedor.DemandaInterna, fornecedor.PrecoDesejavel, fornecedor.FazOferta})
+	}
+
+	t.Render()
+
+	t = table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+
+	t.AppendHeader(table.Row{"Codigo Fornecedor", "Preco Venda", "Capacidade Fornecimento", "Codigo Comprador", "Demanda Solicitada", "Status"})
+	for _, msg := range quadro.Mensagem {
+		if msg == nil {
+			continue
+		}
+
+		status := quadromensagens.MsgStatusString[msg.Status]
+		t.AppendRow([]interface{}{msg.CodigoFornecedor, msg.PrecoVenda, msg.CapacidadeFornecimento, msg.CodigoComprador, msg.DemandaSolicitada, status})
+	}
+
+	t.Render()
 }
 
 func exibeIntroducao() { //Função para exibir informações de introdução
