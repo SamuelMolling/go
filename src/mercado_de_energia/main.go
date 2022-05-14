@@ -67,10 +67,10 @@ func main() {
 				consumidor2.Inicia_EConsumidor()
 			} else {
 				fmt.Println("Iniciando simulação...")
-				quadro := quadromensagens.QuadroMsg{}
-				quadro.InicializaQmsg()
-				ctx, _ := context.WithTimeout(context.Background(), 120*time.Second)
-				go func() {
+				quadro := quadromensagens.QuadroMsg{}                               //Cria um quadro
+				quadro.InicializaQmsg()                                             //Inicializa o quadro
+				ctx, _ := context.WithTimeout(context.Background(), 60*time.Second) //Cria um contexto de 120 segunds
+				go func() {                                                         //Thread pra debug
 					for {
 						printDbg(
 							quadro,
@@ -79,7 +79,7 @@ func main() {
 						time.Sleep(1 * time.Second)
 					}
 				}()
-
+				//Cria as threads
 				go consumidor1.WorkConsumidor(ctx, quadro)
 				go consumidor2.WorkConsumidor(ctx, quadro)
 				go fornecedor1.WorkFornecedorOferta(ctx, quadro)

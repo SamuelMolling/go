@@ -24,7 +24,7 @@ type Efornecedor struct {
 
 func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de dados
 	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
-	c.PrecoDesejavel = GetRandFloat(100, 200)
+	c.PrecoDesejavel = GetRandFloat(100, 150)
 	c.MenorPreco = GetRandFloat(50, 100)
 	c.EnergiaGerada = GetRandFloat(5000, 10000)
 	c.EnergiaFornecida = 0
@@ -48,7 +48,7 @@ func GetRandFloat(min, max float64) float64 { //Gerador de num aleatorios float
 }
 
 func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagens.QuadroMsg) {
-	once := &sync.Once{}
+	once := &sync.Once{} //Cria um type Once
 
 	for {
 		time.Sleep(time.Second * 1)
@@ -61,10 +61,10 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 					c.AtualizaCapacidaDeCarga(c.Oferta.CapacidadeFornecimento)
 					c.Oferta.Clean()
 					c.FazOferta = false
-				} else if c.Oferta.Status == quadromensagens.Recusa {
-					fmt.Println("\nFornecedor: ", c.Id, " - Oferta Recusada")
-					c.Oferta.Status = quadromensagens.Oferta
-					c.FazOferta = false
+				} else if c.Oferta.Status == quadromensagens.Recusa { //se oferta é recusada
+					fmt.Println("\nFornecedor: ", c.Id, " - Oferta Recusada") //print
+					c.Oferta.Status = quadromensagens.Oferta                  //Oferta do Efornecedor seta como recusada
+					c.FazOferta = false                                       //faz oferta false
 				}
 
 			} else {
@@ -73,42 +73,31 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 						continue
 					}
 
-					q.MuRW.Lock()
+					q.MuRW.Lock() //Locka o mutex para escrita
 
-					if oferta.Status == quadromensagens.Oferta && oferta.CodigoFornecedor == -1 {
-						fmt.Printf("\nFornecedor %d recebeu oferta do comprador  %d", c.Id, oferta.CodigoComprador)
+					if oferta.Status == quadromensagens.Oferta && oferta.CodigoFornecedor == -1 { //Valida se tem uma oferta do comprador
+						fmt.Printf("\nFornecedor %d mandou oferta do comprador  %d", c.Id, oferta.CodigoComprador)
 						if oferta.DemandaSolicitada <= c.CapacidadeCarga && oferta.PrecoVenda <= c.PrecoDesejavel {
-							oferta.Status = quadromensagens.Proposta
-							oferta.CodigoFornecedor = c.Id
-
 							if c.CapacidadeCarga > oferta.DemandaSolicitada {
-								oferta.CapacidadeFornecimento = 2
+								oferta.CapacidadeFornecimento = 500 //limita o fornecimento para 500
 							} else {
 								oferta.CapacidadeFornecimento = c.CapacidadeCarga
 							}
-
+							oferta.Status = quadromensagens.Proposta
+							oferta.CodigoFornecedor = c.Id
+							oferta.PrecoVenda = c.PrecoDesejavel //teste
 							c.Oferta = oferta
 							c.FazOferta = true
 						}
 					}
 
-					q.MuRW.Unlock()
+					q.MuRW.Unlock() //Unlock mutex
 				}
 			}
 
-			if c.CapacidadeCarga <= (c.EnergiaGerada * 0.1) {
-				once.Do(c.AtualizaPrecoDesejavel)
+			if c.CapacidadeCarga <= (c.EnergiaGerada * 0.1) { //se a capacidade de carga for 10% menor que a energia gerada, ele atualiza o preco
+				once.Do(c.AtualizaPrecoDesejavel) //Onde.Do executa uma vez a atualização por "if"
 			}
 		}
 	}
-}
-
-//Teste para print de threads
-func PrintThreads(id int) {
-	fmt.Printf("\nThread %d Execução em: ", id)
-	printDate()
-}
-func printDate() { //Função para print data e hora atual
-	currentTime := time.Now()
-	fmt.Println(currentTime.Format("02/01/2006 15:04:05"))
 }
