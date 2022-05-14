@@ -70,15 +70,15 @@ func main() {
 				quadro := quadromensagens.QuadroMsg{}                               //Cria um quadro
 				quadro.InicializaQmsg()                                             //Inicializa o quadro
 				ctx, _ := context.WithTimeout(context.Background(), 60*time.Second) //Cria um contexto de 120 segunds
-				go func() {                                                         //Thread pra debug
-					for {
-						printDbg(
-							quadro,
-							[]comprador.EConsumidor{consumidor1, consumidor2},
-							[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
-						time.Sleep(1 * time.Second)
-					}
-				}()
+				// go func() {                                                         //Thread pra debug
+				// 	for {
+				// 		printDbg(
+				// 			quadro,
+				// 			[]comprador.EConsumidor{consumidor1, consumidor2},
+				// 			[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
+				// 		time.Sleep(1 * time.Second)
+				// 	}
+				// }()
 				//Cria as threads
 				go consumidor1.WorkConsumidor(ctx, quadro)
 				go consumidor2.WorkConsumidor(ctx, quadro)

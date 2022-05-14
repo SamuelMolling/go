@@ -50,8 +50,8 @@ func (c *QuadroMsg) InicializaQmsg() { // Inicialização da estrutura de dados
 
 func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem atual
 	for i := 0; i < 8; i++ {
-		if c.Mensagem[i] == nil || c.Mensagem[i].Status == Livre {
-			return i
+		if c.Mensagem[i] == nil || c.Mensagem[i].Status == Livre { //valida se mensagem esta como nula ou livre
+			return i //caso esteja retorna o indice
 		}
 	}
 
