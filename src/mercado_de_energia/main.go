@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"math"
 	"mercado_de_energia/pkg/comprador"
 	"mercado_de_energia/pkg/fornecedor"
+	"mercado_de_energia/pkg/gopherdance"
 	quadromensagens "mercado_de_energia/pkg/quadro_mensagens"
 	"os"
 	"time"
@@ -30,20 +32,13 @@ func main() {
 	consumidor2 := comprador.EConsumidor{Id: 2} //vincula o consumidor2 como id 2
 
 	for {
-		fmt.Println("\n\n ############# Bem-vindo ao Mercado de Energia! #############")
-
 		exibeMenu()            //Exibe o menu de opções
 		comando := leComando() //grava a opção digitada
 
 		switch comando {
 		case 1:
 			screen.Clear()
-			fmt.Println("###########################")
-			fmt.Println("Dados dos fornecedores")
-			fmt.Println("#############################")
-			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor1.Id, fornecedor1.CapacidadeCarga, fornecedor1.EnergiaGerada, fornecedor1.EnergiaFornecida, fornecedor1.MenorPreco, fornecedor1.DemandaInterna, fornecedor1.PrecoDesejavel)
-			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor2.Id, fornecedor2.CapacidadeCarga, fornecedor2.EnergiaGerada, fornecedor2.EnergiaFornecida, fornecedor2.MenorPreco, fornecedor2.DemandaInterna, fornecedor2.PrecoDesejavel)
-			fmt.Printf("\nId: %d\nCapacidade de carga [kW]: %.2f\nEnergia gerada [kW]: %.2f\nEnergia fornecida [kW]: %.2f\nPreço minimo desejável [R$/kW]: %.2f\nDemanda Interna [kW]: %.2f\nPreço desejável [R$/kW]: %.2f\n", fornecedor3.Id, fornecedor3.CapacidadeCarga, fornecedor3.EnergiaGerada, fornecedor3.EnergiaFornecida, fornecedor3.MenorPreco, fornecedor3.DemandaInterna, fornecedor3.PrecoDesejavel)
+			printFornecedor([]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
 		case 2:
 			screen.Clear()
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
@@ -52,11 +47,7 @@ func main() {
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
 			} else {
-				fmt.Println("###########################")
-				fmt.Println("Dados dos consumidores")
-				fmt.Println("#############################")
-				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %d\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor1.Id, consumidor1.PrazoContrato, consumidor1.Demanda, consumidor1.PrecoMaximo, consumidor1.TarifaDesejavel)
-				fmt.Printf("\nId: %d\nPrazo de contrato do Consumidor [s]: %d\nDemanda Consumidor [kW]: %.2f\nMáximo preço admissível [R$/kW]: %.2f\nTarifa desejável [R$/kW]: %.2f\n", consumidor2.Id, consumidor2.PrazoContrato, consumidor2.Demanda, consumidor2.PrecoMaximo, consumidor2.TarifaDesejavel)
+				printConsumidor([]comprador.EConsumidor{consumidor1, consumidor2})
 			}
 		case 3:
 			screen.Clear()
@@ -65,29 +56,31 @@ func main() {
 				fmt.Println("ERRO: Consumidor ainda não cadastrado!!!!\n\n")
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
-			} else {
-				fmt.Println("Iniciando simulação...")
-				quadro := quadromensagens.QuadroMsg{}                               //Cria um quadro
-				quadro.InicializaQmsg()                                             //Inicializa o quadro
-				ctx, _ := context.WithTimeout(context.Background(), 60*time.Second) //Cria um contexto de 120 segunds
-				// go func() {                                                         //Thread pra debug
-				// 	for {
-				// 		printDbg(
-				// 			quadro,
-				// 			[]comprador.EConsumidor{consumidor1, consumidor2},
-				// 			[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
-				// 		time.Sleep(1 * time.Second)
-				// 	}
-				// }()
-				//Cria as threads
-				go consumidor1.WorkConsumidor(ctx, quadro)
-				go consumidor2.WorkConsumidor(ctx, quadro)
-				go fornecedor1.WorkFornecedorOferta(ctx, quadro)
-				go fornecedor2.WorkFornecedorOferta(ctx, quadro)
-				go fornecedor3.WorkFornecedorOferta(ctx, quadro)
-
-				<-ctx.Done()
 			}
+			fmt.Println("Iniciando simulação...")
+			quadro := quadromensagens.QuadroMsg{}                                //Cria um quadro
+			quadro.InicializaQmsg()                                              //Inicializa o quadro
+			ctx, _ := context.WithTimeout(context.Background(), 120*time.Second) //Cria um contexto de 120 segundos
+			// go func() {                                                          //Thread pra debug
+			// 	for {
+			// 		printDbg(
+			// 			quadro,
+			// 			[]comprador.EConsumidor{consumidor1, consumidor2},
+			// 			[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
+			// 		time.Sleep(1 * time.Second)
+			// 	}
+			// }()
+			//Cria as threads
+			go consumidor1.WorkConsumidor(ctx, quadro)
+			go consumidor2.WorkConsumidor(ctx, quadro)
+			go fornecedor1.WorkFornecedorOferta(ctx, quadro)
+			go fornecedor2.WorkFornecedorOferta(ctx, quadro)
+			go fornecedor3.WorkFornecedorOferta(ctx, quadro)
+
+			<-ctx.Done()
+		case 99: //Easter egg
+			gopherdance.Main()
+			return
 		case 0: //Encerra o programa
 			screen.Clear()
 			fmt.Print("Encerrando o Mercado de Energia...\n")
@@ -96,7 +89,6 @@ func main() {
 		default: //Caso nenhum dos comandos acima seja selecionado, ele retorna um erro
 			screen.Clear()
 			fmt.Println("ERROR: command not found")
-			os.Exit(-1)
 		}
 	}
 }
@@ -139,24 +131,27 @@ func printDbg(quadro quadromensagens.QuadroMsg, consumidores []comprador.EConsum
 }
 
 func exibeIntroducao() { //Função para exibir informações de introdução
-	titulo := "Mercado de Energia"
-	disciplina := "Interfaceamento e Drivers"
-	versao := 1.0
-	professora := "Bruna Fernandes Flesch"
-	nomes := "Gabriel, Mauricio e Samuel"
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"Titulo", "Disciplina", "Versão", "Professora", "Nomes"})
 
-	fmt.Println("Titulo: ", titulo)
-	fmt.Println("Disciplina: ", disciplina)
-	fmt.Println("Professora: ", professora)
-	fmt.Println("Nomes: ", nomes)
-	fmt.Println("Programa na versão: ", versao)
+	t.AppendRow([]interface{}{"Mercado Livre de Energia", "Interfaceamento e Drivers", "1.0", "Bruna Fernandes Flesch", "Gabriel, Mauricio e Samuel"})
+	t.Render()
 }
 
 func exibeMenu() { //Função para exibir opções do menu
-	fmt.Println("1 - Mostrar dados dos fornecedores")
-	fmt.Println("2 - Mostrar dados dos consumidores")
-	fmt.Println("3 - Executar simulação")
-	fmt.Println("0 - Sair do programa")
+	descrição := [5]string{
+		"Sair do programa",
+		"Mostrar dados dos fornecedores",
+		"Mostrar dados dos consumidores",
+		"Executar simulação"}
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"Opção", "Descrição"})
+	for i := 0; i < 4; i++ {
+		t.AppendRow([]interface{}{i, descrição[i]})
+	}
+	t.Render()
 	fmt.Print("\nOpção: ")
 }
 
@@ -165,4 +160,33 @@ func leComando() int { //Função para salvar a opção desejada do menu
 	fmt.Scan(&comandoLido)
 	fmt.Println("")
 	return comandoLido
+}
+
+func printFornecedor(fornecedores []fornecedor.Efornecedor) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"Id", "Capacidade de Carga", "Energia Gerada", "Energia Fornecida", "Demanda Interna", "Preço Desejável"})
+	for _, fornecedor := range fornecedores {
+		t.AppendRow([]interface{}{fornecedor.Id, toFixed(fornecedor.CapacidadeCarga, 2), toFixed(fornecedor.EnergiaGerada, 2), toFixed(fornecedor.EnergiaFornecida, 2), toFixed(fornecedor.DemandaInterna, 2), toFixed(fornecedor.PrecoDesejavel, 2)})
+	}
+	t.Render()
+}
+
+func printConsumidor(consumidores []comprador.EConsumidor) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.AppendHeader(table.Row{"Id", "Prazo de contrato [s]", "Demanda Consumidor [kW]", "Máximo preço admissível [R$/kW]", "Tarifa desejável [R$/kW]"})
+	for _, consumidor := range consumidores {
+		t.AppendRow([]interface{}{consumidor.Id, consumidor.PrazoContrato, toFixed(consumidor.Demanda, 2), toFixed(consumidor.PrecoMaximo, 2), toFixed(consumidor.TarifaDesejavel, 2)})
+	}
+	t.Render()
+}
+
+func round(num float64) int {
+	return int(num + math.Copysign(0.5, num))
+}
+
+func toFixed(num float64, precision int) float64 {
+	output := math.Pow(10, float64(precision))
+	return float64(round(num*output)) / output
 }

@@ -48,9 +48,9 @@ func (c *EConsumidor) Inicia_EConsumidor() {
 func (c *EConsumidor) AtualizaPA() { //Atualiza preço máximo, caso o prazo esteja acabando
 	if c.PrazoContrato == 15 { //se o prazo for menor ou igual que 5 segundos
 		c.PrecoMaximo += (c.PrecoMaximo * 0.22)
-		c.TarifaDesejavel = c.PrecoMaximo
+		c.TarifaDesejavel += c.PrecoMaximo
 	} else {
-		c.TarifaDesejavel += 1 //Acrescenta 0.05 no valor da tarifa desejável
+		c.TarifaDesejavel += 1 //Acrescenta 1 no valor da tarifa desejável
 	}
 }
 
@@ -77,22 +77,22 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 
 	for {
 		select {
-		case <-ctx.Done():
+		case <-ctx.Done(): //Espera o timeout de 120
 			return
 		case <-tick.C:
-			c.PrazoContrato--
-			c.AtualizaPA()
+			c.PrazoContrato-- //decrementa o prazo de contrato
+			c.AtualizaPA()    //Atualiza preço desejável
 		case <-terminoContrato.C:
-			c.OfertaAberta = false
-			q.MuRW.Lock()
-			c.Oferta.Clean()
-			q.MuRW.Unlock()
+			c.OfertaAberta = false //fecha oferta
+			q.MuRW.Lock()          //lock quadro
+			c.Oferta.Clean()       //limpa o quadro
+			q.MuRW.Unlock()        //unlock
 			return
 		default:
 			if c.PrazoContrato <= 0 || c.Demanda <= 0 {
 				return
 			}
-			if c.Demanda > 0 && !c.OfertaAberta {
+			if c.Demanda > 0 && !c.OfertaAberta { //se demanda > 0 e oferta aberta seja false -> faz oferta
 				oferta := &quadromensagens.MsgMerc{}         //Cria uma variável tipo quadro
 				oferta.CodigoComprador = c.Id                //Vincula o id de um comprador
 				oferta.DemandaSolicitada = c.Demanda         //Vincula uma demanda de um comprador
@@ -128,7 +128,6 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 						c.Oferta.PrecoVenda)
 					c.Oferta.Status = quadromensagens.Recusa
 				}
-
 			}
 		}
 	}

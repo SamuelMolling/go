@@ -56,15 +56,15 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 		case <-ctx.Done():
 			return
 		default:
-			if c.FazOferta {
+			if c.FazOferta { //Valida se fazoferta é igual a true
 				if c.Oferta.Status == quadromensagens.Aceite {
 					c.AtualizaCapacidaDeCarga(c.Oferta.CapacidadeFornecimento)
-					c.Oferta.Clean()
+					c.Oferta.Clean() //limpa oferta do aceite
 					c.FazOferta = false
 				} else if c.Oferta.Status == quadromensagens.Recusa { //se oferta é recusada
-					fmt.Println("\nFornecedor: ", c.Id, " - Oferta Recusada") //print
-					c.Oferta.Status = quadromensagens.Oferta                  //Oferta do Efornecedor seta como recusada
-					c.FazOferta = false                                       //faz oferta false
+					fmt.Println("\nFornecedor: ", c.Id, " - Teve oferta Recusada") //print mostrando qual fornecedor teve oferta recusada
+					c.Oferta.Status = quadromensagens.Oferta                       //Oferta do Efornecedor seta como oferta
+					c.FazOferta = false                                            //faz oferta false
 				}
 
 			} else {
@@ -79,13 +79,13 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 						fmt.Printf("\nFornecedor %d mandou oferta do comprador  %d", c.Id, oferta.CodigoComprador)
 						if oferta.DemandaSolicitada <= c.CapacidadeCarga && oferta.PrecoVenda <= c.PrecoDesejavel {
 							if c.CapacidadeCarga > oferta.DemandaSolicitada {
-								oferta.CapacidadeFornecimento = 500 //limita o fornecimento para 500
+								oferta.CapacidadeFornecimento = 50 //limita o fornecimento para 500
 							} else {
-								oferta.CapacidadeFornecimento = c.CapacidadeCarga
+								oferta.CapacidadeFornecimento = c.CapacidadeCarga //fornecer o que tem, não a demanda solicitada
 							}
 							oferta.Status = quadromensagens.Proposta
 							oferta.CodigoFornecedor = c.Id
-							oferta.PrecoVenda = c.PrecoDesejavel //teste
+							oferta.PrecoVenda = c.PrecoDesejavel
 							c.Oferta = oferta
 							c.FazOferta = true
 						}

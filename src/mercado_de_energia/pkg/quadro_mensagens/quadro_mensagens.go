@@ -48,7 +48,7 @@ func (c *QuadroMsg) InicializaQmsg() { // Inicialização da estrutura de dados
 	c.MuRW = new(sync.RWMutex)
 }
 
-func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem atual
+func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem livre
 	for i := 0; i < 8; i++ {
 		if c.Mensagem[i] == nil || c.Mensagem[i].Status == Livre { //valida se mensagem esta como nula ou livre
 			return i //caso esteja retorna o indice
@@ -87,7 +87,7 @@ func (m *MsgMerc) Clean() {
 	m.CodigoFornecedor = -1
 	m.PrecoVenda = 0
 	m.CapacidadeFornecimento = 0
-	m.CodigoComprador = 0
+	m.CodigoComprador = -1
 	m.DemandaSolicitada = 0
 	m.Status = Livre
 }
