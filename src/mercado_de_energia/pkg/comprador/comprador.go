@@ -3,6 +3,7 @@ package comprador
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	quadromensagens "mercado_de_energia/pkg/quadro_mensagens"
 	"time"
 )
@@ -22,33 +23,34 @@ type EConsumidor struct {
 func (c *EConsumidor) Inicia_EConsumidor() {
 
 	c.OfertaAberta = false
-	fmt.Println("###########################")
-	fmt.Printf("Cadastrar dados Consumidor: %d\n", c.Id)
-	fmt.Println("###########################\n")
-	fmt.Print("Prazo de contrato do Consumidor [s]:")
-	valor := setValores()
-	c.PrazoContrato = int(valor)
-	fmt.Print("Demanda Consumidor [kW]:")
-	valor = setValores()
-	c.Demanda = valor
-	fmt.Print("Máximo preço admissível [R$/kW]:")
-	valor = setValores()
-	c.PrecoMaximo = valor
-	fmt.Print("Tarifa desejável [R$/kW]:")
-	valor = setValores()
-	c.TarifaDesejavel = valor
+	// fmt.Println("###########################")
+	// fmt.Printf("Cadastrar dados Consumidor: %d\n", c.Id)
+	// fmt.Println("###########################\n")
+	// fmt.Print("Prazo de contrato do Consumidor [s]:")
+	// valor := setValores()
+	// c.PrazoContrato = int(valor)
+	// fmt.Print("Demanda Consumidor [kW]:")
+	// valor = setValores()
+	// c.Demanda = valor
+	// fmt.Print("Máximo preço admissível [R$/kW]:")
+	// valor = setValores()
+	// c.PrecoMaximo = valor
+	// fmt.Print("Tarifa desejável [R$/kW]:")
+	// valor = setValores()
+	// c.TarifaDesejavel = valor
 
-	// 	rand.Seed(time.Now().UnixNano())
-	// 	c.PrazoContrato = rand.Intn(120)
-	// 	c.Demanda = rand.Float64() * 100
-	// 	c.PrecoMaximo = rand.Float64() * 100
-	// 	c.TarifaDesejavel = rand.Float64() * 100
+	rand.Seed(time.Now().UnixNano())
+	c.PrazoContrato = rand.Intn(120)
+	c.Demanda = rand.Float64() * 100
+	c.PrecoMaximo = rand.Float64() * 100
+	c.TarifaDesejavel = rand.Float64() * 100
 }
 
 func (c *EConsumidor) AtualizaPA() { //Atualiza preço máximo, caso o prazo esteja acabando
 	if c.PrazoContrato == 15 { //se o prazo for menor ou igual que 5 segundos
 		c.PrecoMaximo += (c.PrecoMaximo * 0.22)
 		c.TarifaDesejavel += c.PrecoMaximo
+		c.PrecoMaximo = c.TarifaDesejavel
 	} else {
 		c.TarifaDesejavel += 1 //Acrescenta 1 no valor da tarifa desejável
 	}
@@ -99,6 +101,7 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 				oferta.Status = quadromensagens.Oferta       //Vincula uma proposta de um comprador
 				oferta.CodigoFornecedor = -1                 //Vincula um fornecedor a uma proposta
 				if index := q.SetQMsg(oferta); index == -1 { //Valida se o indice é menor que
+					//REMOVER PRINT DPS
 					fmt.Println("\nQuadro de mensagens cheio") //Print quadro de mensagem cheio
 					time.Sleep(time.Second * 5)                //sleep
 				} else {

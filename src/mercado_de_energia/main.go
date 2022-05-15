@@ -15,6 +15,11 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 )
 
+//TO DO
+////Limpar ultima execucao
+////Validar pq nao esta comprando
+////
+
 func main() {
 
 	screen.Clear() //limpa tela
@@ -43,7 +48,7 @@ func main() {
 			screen.Clear()
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
 			if valida_existencia == 0 {
-				fmt.Println("ERRO: Consumidor ainda não cadastrado!!!!\n\n")
+				fmt.Println("Consumidor ainda não cadastrado!!!!\n")
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
 			} else {
@@ -53,7 +58,7 @@ func main() {
 			screen.Clear()
 			valida_existencia := consumidor1.Demanda //Verifica se já existe alguma demanda cadastrada, caso não ele solicita o cadastro
 			if valida_existencia == 0 {
-				fmt.Println("ERRO: Consumidor ainda não cadastrado!!!!\n\n")
+				fmt.Println("Consumidor ainda não cadastrado!!!!\n")
 				consumidor1.Inicia_EConsumidor()
 				consumidor2.Inicia_EConsumidor()
 			}
@@ -61,22 +66,21 @@ func main() {
 			quadro := quadromensagens.QuadroMsg{}                                //Cria um quadro
 			quadro.InicializaQmsg()                                              //Inicializa o quadro
 			ctx, _ := context.WithTimeout(context.Background(), 120*time.Second) //Cria um contexto de 120 segundos
-			// go func() {                                                          //Thread pra debug
-			// 	for {
-			// 		printDbg(
-			// 			quadro,
-			// 			[]comprador.EConsumidor{consumidor1, consumidor2},
-			// 			[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
-			// 		time.Sleep(1 * time.Second)
-			// 	}
-			// }()
+			go func() {                                                          //Thread pra debug
+				for {
+					printDbg(
+						quadro,
+						[]comprador.EConsumidor{consumidor1, consumidor2},
+						[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
+					time.Sleep(1 * time.Second)
+				}
+			}()
 			//Cria as threads
 			go consumidor1.WorkConsumidor(ctx, quadro)
 			go consumidor2.WorkConsumidor(ctx, quadro)
 			go fornecedor1.WorkFornecedorOferta(ctx, quadro)
 			go fornecedor2.WorkFornecedorOferta(ctx, quadro)
 			go fornecedor3.WorkFornecedorOferta(ctx, quadro)
-
 			<-ctx.Done()
 		case 99: //Easter egg
 			gopherdance.Main()

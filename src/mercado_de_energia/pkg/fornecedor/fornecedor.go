@@ -24,8 +24,8 @@ type Efornecedor struct {
 
 func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de dados
 	rand.Seed(time.Now().UnixNano()) //limpa buffer para geração de números aleatórios
-	c.PrecoDesejavel = GetRandFloat(100, 150)
-	c.MenorPreco = GetRandFloat(50, 100)
+	c.PrecoDesejavel = GetRandFloat(100, 130)
+	c.MenorPreco = GetRandFloat(50, 90)
 	c.EnergiaGerada = GetRandFloat(5000, 10000)
 	c.EnergiaFornecida = 0
 	c.DemandaInterna = GetRandFloat(1000, 1500)
@@ -64,7 +64,9 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 				} else if c.Oferta.Status == quadromensagens.Recusa { //se oferta é recusada
 					fmt.Println("\nFornecedor: ", c.Id, " - Teve oferta Recusada") //print mostrando qual fornecedor teve oferta recusada
 					c.Oferta.Status = quadromensagens.Oferta                       //Oferta do Efornecedor seta como oferta
-					c.FazOferta = false                                            //faz oferta false
+					c.FazOferta = false
+					c.Oferta.CodigoFornecedor = -1
+					c.Oferta.PrecoVenda = 0
 				}
 
 			} else {
@@ -79,7 +81,7 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 						fmt.Printf("\nFornecedor %d mandou oferta do comprador  %d", c.Id, oferta.CodigoComprador)
 						if oferta.DemandaSolicitada <= c.CapacidadeCarga && oferta.PrecoVenda <= c.PrecoDesejavel {
 							if c.CapacidadeCarga > oferta.DemandaSolicitada {
-								oferta.CapacidadeFornecimento = 50 //limita o fornecimento para 500
+								oferta.CapacidadeFornecimento = 100 //limita o fornecimento para 500
 							} else {
 								oferta.CapacidadeFornecimento = c.CapacidadeCarga //fornecer o que tem, não a demanda solicitada
 							}
