@@ -12,8 +12,8 @@ type MsgStatus int
 
 const (
 	Livre    MsgStatus = iota // mensagem está livre para ser utilizada
-	Oferta                    // oferta é postada pelo fornecedor
-	Proposta                  // Comprador estabelece uma proposta de compra
+	Oferta                    // oferta é postada pelo Comprador
+	Proposta                  // Fornecedor estabelece uma proposta de compra
 	Aceite                    // Comprador aceita a proposta
 	Recusa                    // Comprador nao aceita a proposta
 )
@@ -54,7 +54,6 @@ func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem livre
 			return i //caso esteja retorna o indice
 		}
 	}
-
 	return -1
 }
 
@@ -65,7 +64,6 @@ func (c *QuadroMsg) SetQMsg(msg *MsgMerc) int { // Seta mensagem no quadro
 		c.Mensagem[index] = msg
 	}
 	c.MuRW.Unlock()
-
 	return index
 }
 

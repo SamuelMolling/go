@@ -61,12 +61,13 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 					c.AtualizaCapacidaDeCarga(c.Oferta.CapacidadeFornecimento)
 					c.Oferta.Clean() //limpa oferta do aceite
 					c.FazOferta = false
+					fmt.Println("\nFornecedor:", c.Id, "- Teve oferta Aceita") //print mostrando qual fornecedor teve oferta aceita
 				} else if c.Oferta.Status == quadromensagens.Recusa { //se oferta é recusada
-					fmt.Println("\nFornecedor: ", c.Id, " - Teve oferta Recusada") //print mostrando qual fornecedor teve oferta recusada
-					c.Oferta.Status = quadromensagens.Oferta                       //Oferta do Efornecedor seta como oferta
+					fmt.Println("\nFornecedor:", c.Id, "- Teve oferta Recusada") //print mostrando qual fornecedor teve oferta recusada
+					c.Oferta.Status = quadromensagens.Oferta                     //Oferta do Efornecedor seta como oferta
 					c.FazOferta = false
+					c.Oferta.Clean() //limpa oferta do aceite
 					c.Oferta.CodigoFornecedor = -1
-					c.Oferta.PrecoVenda = 0
 				}
 
 			} else {
@@ -78,10 +79,10 @@ func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagen
 					q.MuRW.Lock() //Locka o mutex para escrita
 
 					if oferta.Status == quadromensagens.Oferta && oferta.CodigoFornecedor == -1 { //Valida se tem uma oferta do comprador
-						fmt.Printf("\nFornecedor %d mandou oferta do comprador  %d", c.Id, oferta.CodigoComprador)
+						fmt.Printf("\nFornecedor %d mandou oferta para o comprador  %d", c.Id, oferta.CodigoComprador)
 						if oferta.DemandaSolicitada <= c.CapacidadeCarga && oferta.PrecoVenda <= c.PrecoDesejavel {
 							if c.CapacidadeCarga > oferta.DemandaSolicitada {
-								oferta.CapacidadeFornecimento = 100 //limita o fornecimento para 500
+								oferta.CapacidadeFornecimento = 10 //limita o fornecimento para 100
 							} else {
 								oferta.CapacidadeFornecimento = c.CapacidadeCarga //fornecer o que tem, não a demanda solicitada
 							}

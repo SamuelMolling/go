@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/inancgumus/screen"
 )
 
 var (
@@ -2775,6 +2777,7 @@ func drawGopherAtLC(l, c int, done chan bool, gopherTicker time.Ticker) {
 }
 
 func Main() {
+	screen.Clear()
 	gopherTicker := *time.NewTicker(25 * time.Millisecond)
 	done := make(chan bool)
 
@@ -2785,5 +2788,4 @@ func Main() {
 	time.Sleep(50 * time.Second)
 	gopherTicker.Stop()
 	done <- true
-	fmt.Print("exiting")
 }

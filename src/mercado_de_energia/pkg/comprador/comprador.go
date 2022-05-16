@@ -84,6 +84,7 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 		case <-tick.C:
 			c.PrazoContrato-- //decrementa o prazo de contrato
 			c.AtualizaPA()    //Atualiza preço desejável
+			continue
 		case <-terminoContrato.C:
 			c.OfertaAberta = false //fecha oferta
 			q.MuRW.Lock()          //lock quadro
@@ -95,15 +96,15 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 				return
 			}
 			if c.Demanda > 0 && !c.OfertaAberta { //se demanda > 0 e oferta aberta seja false -> faz oferta
-				oferta := &quadromensagens.MsgMerc{}         //Cria uma variável tipo quadro
-				oferta.CodigoComprador = c.Id                //Vincula o id de um comprador
-				oferta.DemandaSolicitada = c.Demanda         //Vincula uma demanda de um comprador
-				oferta.Status = quadromensagens.Oferta       //Vincula uma proposta de um comprador
-				oferta.CodigoFornecedor = -1                 //Vincula um fornecedor a uma proposta
+				q.MuRW.Lock()
+				oferta := &quadromensagens.MsgMerc{}   //Cria uma variável tipo quadro
+				oferta.CodigoComprador = c.Id          //Vincula o id de um comprador
+				oferta.DemandaSolicitada = c.Demanda   //Vincula uma demanda de um comprador
+				oferta.Status = quadromensagens.Oferta //Vincula uma proposta de um comprador
+				oferta.CodigoFornecedor = -1           //Vincula um fornecedor a uma proposta
+				q.MuRW.Unlock()
 				if index := q.SetQMsg(oferta); index == -1 { //Valida se o indice é menor que
-					//REMOVER PRINT DPS
-					fmt.Println("\nQuadro de mensagens cheio") //Print quadro de mensagem cheio
-					time.Sleep(time.Second * 5)                //sleep
+					time.Sleep(time.Second * 5) //sleep
 				} else {
 					fmt.Printf("\nConsumidor %d enviou uma proposta de %.2f kW para o fornecedor (quadro %d) \n", c.Id, c.Demanda, index)
 					c.OfertaAberta = true
@@ -112,11 +113,12 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 			}
 
 			if c.OfertaAberta && c.Oferta.Status == quadromensagens.Proposta { //se tiver proposta aberta enviada pelo fornecedor
-				if c.Oferta.PrecoVenda <= c.PrecoMaximo { //Valida se o preco de vende é menor que o preco maximo
+				if c.Oferta.PrecoVenda <= c.TarifaDesejavel { //Valida se o preco de venda é menor que o preco maximo
 					if c.Demanda < c.Oferta.CapacidadeFornecimento { //valida se a demanda é menor que a capacidade de fornecimento total do fornecedor
 						c.Oferta.CapacidadeFornecimento = c.Demanda //Se for, coloca como a capacidade de fornecimento é o valor total da demanda (vai comprar tudo)
 					}
-					fmt.Printf("\nConsumidor %d aceitou a oferta de %.2f kW por %.2f R$\n", //aceitou
+					q.MuRW.Lock()
+					fmt.Printf("\nConsumidor %d aceitou a oferta de %.2f kW por %.2f kW/R$\n", //aceitou
 						c.Oferta.CodigoComprador,
 						c.Oferta.CapacidadeFornecimento,
 						c.Oferta.PrecoVenda)
@@ -124,12 +126,15 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 					c.Demanda -= c.Oferta.CapacidadeFornecimento //Subtrai a demanda total, menos o que comprou
 					c.Oferta.Status = quadromensagens.Aceite     //coloca a mensagem como aceite
 					c.OfertaAberta = false                       //e seta que essa proposta não está aberta
+					q.MuRW.Unlock()
 				} else {
-					fmt.Printf("\nConsumidor %d recusou a oferta de %.2f kW por %.2f R$\n", //se preco for maior que o maximo, recusa a proposta
+					fmt.Printf("\nConsumidor %d recusou a oferta de %.2f kW por %.2f kW/R$\n", //se preco for maior que o maximo, recusa a proposta
 						c.Oferta.CodigoComprador,
 						c.Oferta.CapacidadeFornecimento,
 						c.Oferta.PrecoVenda)
+					q.MuRW.Lock()
 					c.Oferta.Status = quadromensagens.Recusa
+					q.MuRW.Unlock()
 				}
 			}
 		}
