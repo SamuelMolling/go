@@ -84,12 +84,12 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q quadromensagens.Quad
 		case <-tick.C:
 			c.PrazoContrato-- //decrementa o prazo de contrato
 			c.AtualizaPA()    //Atualiza preço desejável
-			continue
 		case <-terminoContrato.C:
 			c.OfertaAberta = false //fecha oferta
-			q.MuRW.Lock()          //lock quadro
-			c.Oferta.Clean()       //limpa o quadro
-			q.MuRW.Unlock()        //unlock
+			c.Oferta = nil
+			q.MuRW.Lock()    //lock quadro
+			c.Oferta.Clean() //limpa o quadro
+			q.MuRW.Unlock()  //unlock
 			return
 		default:
 			if c.PrazoContrato <= 0 || c.Demanda <= 0 {

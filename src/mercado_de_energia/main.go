@@ -65,14 +65,19 @@ func main() {
 			fmt.Println("Iniciando simulação...")
 			quadro := quadromensagens.QuadroMsg{}                               //Cria um quadro
 			quadro.InicializaQmsg()                                             //Inicializa o quadro
-			ctx, _ := context.WithTimeout(context.Background(), 60*time.Second) //Cria um contexto de 120 segundos
+			ctx, _ := context.WithTimeout(context.Background(), 90*time.Second) //Cria um contexto de 120 segundos
 			go func() {                                                         //Thread pra debug
 				for {
-					printDbg(
-						quadro,
-						[]comprador.EConsumidor{consumidor1, consumidor2},
-						[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
-					time.Sleep(1 * time.Second)
+					select {
+					case <-ctx.Done():
+						return
+					default:
+						printDbg(
+							quadro,
+							[]comprador.EConsumidor{consumidor1, consumidor2},
+							[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
+						time.Sleep(1 * time.Second)
+					}
 				}
 			}()
 			//Cria as threads
@@ -98,7 +103,6 @@ func main() {
 }
 
 func printDbg(quadro quadromensagens.QuadroMsg, consumidores []comprador.EConsumidor, fornecedores []fornecedor.Efornecedor) {
-
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 
