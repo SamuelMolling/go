@@ -37,34 +37,45 @@ type MsgMerc struct {
 }
 
 type QuadroMsg struct { // Estrutura do quadro de mensagens
-	Mensagem []*MsgMerc    // Numero máximo de mensagens do quadro
-	MsgAtual int           //mensagem atual
-	MuRW     *sync.RWMutex //Criar mutex de scrita e leitura
+	Mensagem     []*MsgMerc // Numero máximo de mensagens do quadro
+	MensagemLock []*sync.Mutex
+	MsgAtual     int //mensagem atual
+	Mu           *sync.Mutex
 }
 
 func (c *QuadroMsg) InicializaQmsg() { // Inicialização da estrutura de dados
 	c.Mensagem = make([]*MsgMerc, 8)
-	c.MsgAtual = 0
-	c.MuRW = new(sync.RWMutex)
-}
-
-func (c *QuadroMsg) LivreQMsg() int { // retorna com o indice da mensagem livre
+	c.MensagemLock = make([]*sync.Mutex, 8)
+	c.Mu = &sync.Mutex{}
 	for i := 0; i < 8; i++ {
-		if c.Mensagem[i] == nil || c.Mensagem[i].Status == Livre { //valida se mensagem esta como nula ou livre
-			return i //caso esteja retorna o indice
-		}
+		c.Mensagem[i] = new(MsgMerc)
+		c.Mensagem[i].Clean()
+		c.MensagemLock[i] = new(sync.Mutex)
 	}
-	return -1
+
+	c.MsgAtual = 0
 }
 
 func (c *QuadroMsg) SetQMsg(msg *MsgMerc) int { // Seta mensagem no quadro
-	c.MuRW.Lock()
-	index := c.LivreQMsg()
-	if index != -1 {
-		c.Mensagem[index] = msg
+	c.Mu.Lock()
+	defer c.Mu.Unlock()
+	for i := 0; i < 8; i++ {
+		if c.Mensagem[i].Status == Livre {
+			c.Mensagem[i] = msg
+			return i
+		}
 	}
-	c.MuRW.Unlock()
-	return index
+
+	return -1
+}
+
+func (c *QuadroMsg) GetQMsg(codigoComprador int) int {
+	for i := 0; i < 8; i++ {
+		if c.Mensagem[i] != nil && c.Mensagem[i].CodigoComprador == codigoComprador {
+			return i
+		}
+	}
+	return -1
 }
 
 func (c *QuadroMsg) PrintQMsg() { //Imprime quadro de mensagens
@@ -88,4 +99,11 @@ func (m *MsgMerc) Clean() {
 	m.CodigoComprador = -1
 	m.DemandaSolicitada = 0
 	m.Status = Livre
+}
+
+func (m *MsgMerc) CleanFornecedor() {
+	m.CodigoFornecedor = -1
+	m.PrecoVenda = 0
+	m.CapacidadeFornecimento = 0
+	m.Status = Oferta
 }

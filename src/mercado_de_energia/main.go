@@ -39,7 +39,7 @@ func main() {
 	for {
 		exibeMenu()            //Exibe o menu de opções
 		comando := leComando() //grava a opção digitada
-
+		//	comando := 3
 		switch comando {
 		case 1:
 			screen.Clear()
@@ -73,7 +73,7 @@ func main() {
 						return
 					default:
 						printDbg(
-							quadro,
+							&quadro,
 							[]comprador.EConsumidor{consumidor1, consumidor2},
 							[]fornecedor.Efornecedor{fornecedor1, fornecedor2, fornecedor3})
 						time.Sleep(1 * time.Second)
@@ -81,11 +81,11 @@ func main() {
 				}
 			}()
 			//Cria as threads
-			go consumidor1.WorkConsumidor(ctx, quadro)
-			go consumidor2.WorkConsumidor(ctx, quadro)
-			go fornecedor1.WorkFornecedorOferta(ctx, quadro)
-			go fornecedor2.WorkFornecedorOferta(ctx, quadro)
-			go fornecedor3.WorkFornecedorOferta(ctx, quadro)
+			go consumidor1.WorkConsumidor(ctx, &quadro)
+			go consumidor2.WorkConsumidor(ctx, &quadro)
+			go fornecedor1.WorkFornecedorOferta(ctx, &quadro)
+			go fornecedor2.WorkFornecedorOferta(ctx, &quadro)
+			go fornecedor3.WorkFornecedorOferta(ctx, &quadro)
 			<-ctx.Done()
 		case 99: //Easter egg
 			gopherdance.Main()
@@ -102,13 +102,13 @@ func main() {
 	}
 }
 
-func printDbg(quadro quadromensagens.QuadroMsg, consumidores []comprador.EConsumidor, fornecedores []fornecedor.Efornecedor) {
+func printDbg(quadro *quadromensagens.QuadroMsg, consumidores []comprador.EConsumidor, fornecedores []fornecedor.Efornecedor) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 
-	t.AppendHeader(table.Row{"Id", "Prazo de Contrato [s]", "Demanda [kW]", "Preço Máximo [kW/R$]", "Tarifa Desejável [kW/R$]", "Oferta Aberta"})
+	t.AppendHeader(table.Row{"Id", "Prazo de Contrato [s]", "Demanda [kW]", "Preço Máximo [kW/R$]", "Tarifa Desejável [kW/R$]", "Oferta Aberta", "Oferta"})
 	for _, consumidor := range consumidores {
-		t.AppendRow([]interface{}{consumidor.Id, consumidor.PrazoContrato, toFixed(consumidor.Demanda, 2), toFixed(consumidor.PrecoMaximo, 2), toFixed(consumidor.TarifaDesejavel, 2), consumidor.OfertaAberta})
+		t.AppendRow([]interface{}{consumidor.Id, consumidor.PrazoContrato, toFixed(consumidor.Demanda, 2), toFixed(consumidor.PrecoMaximo, 2), toFixed(consumidor.TarifaDesejavel, 2), consumidor.OfertaAberta, consumidor.OfertaId})
 	}
 
 	t.Render()
@@ -116,9 +116,9 @@ func printDbg(quadro quadromensagens.QuadroMsg, consumidores []comprador.EConsum
 	t = table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 
-	t.AppendHeader(table.Row{"Id", "Capacidade de Carga [kW]", "Energia Gerada [kW]", "Energia Fornecida [kW]", "Demanda Interna [kW]", "Preço Desejável [kW/R$]", "Faz Oferta"})
+	t.AppendHeader(table.Row{"Id", "Capacidade de Carga [kW]", "Energia Gerada [kW]", "Energia Fornecida [kW]", "Demanda Interna [kW]", "Preço Desejável [kW/R$]", "Faz Oferta", "Oferta"})
 	for _, fornecedor := range fornecedores {
-		t.AppendRow([]interface{}{fornecedor.Id, toFixed(fornecedor.CapacidadeCarga, 2), toFixed(fornecedor.EnergiaGerada, 2), toFixed(fornecedor.EnergiaFornecida, 2), toFixed(fornecedor.DemandaInterna, 2), toFixed(fornecedor.PrecoDesejavel, 2), fornecedor.FazOferta})
+		t.AppendRow([]interface{}{fornecedor.Id, toFixed(fornecedor.CapacidadeCarga, 2), toFixed(fornecedor.EnergiaGerada, 2), toFixed(fornecedor.EnergiaFornecida, 2), toFixed(fornecedor.DemandaInterna, 2), toFixed(fornecedor.PrecoDesejavel, 2), fornecedor.FazOferta, fornecedor.OfertaId})
 	}
 
 	t.Render()
@@ -126,14 +126,15 @@ func printDbg(quadro quadromensagens.QuadroMsg, consumidores []comprador.EConsum
 	t = table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
 
-	t.AppendHeader(table.Row{"Codigo Fornecedor", "Preco Venda [kW/R$]", "Capacidade Fornecimento [kW]", "Codigo Comprador", "Demanda Solicitada [kW]", "Status"})
-	for _, msg := range quadro.Mensagem {
-		if msg == nil {
+	t.AppendHeader(table.Row{"Oferta", "Codigo Fornecedor", "Preco Venda [kW/R$]", "Capacidade Fornecimento [kW]", "Codigo Comprador", "Demanda Solicitada [kW]", "Status"})
+	for id, msg := range quadro.Mensagem {
+		if msg.Status == quadromensagens.Livre {
 			continue
 		}
 
 		status := quadromensagens.MsgStatusString[msg.Status]
-		t.AppendRow([]interface{}{msg.CodigoFornecedor, toFixed(msg.PrecoVenda, 2), toFixed(msg.CapacidadeFornecimento, 2), msg.CodigoComprador, toFixed(msg.DemandaSolicitada, 2), status})
+
+		t.AppendRow([]interface{}{id, msg.CodigoFornecedor, toFixed(msg.PrecoVenda, 2), toFixed(msg.CapacidadeFornecimento, 2), msg.CodigoComprador, toFixed(msg.DemandaSolicitada, 2), status})
 	}
 
 	t.Render()

@@ -11,15 +11,15 @@ import (
 
 // Criando um tipo de dados que será utilizado pelas funções  de calculo da equacao linear
 type Efornecedor struct {
-	Id               int                      // id
-	PrecoDesejavel   float64                  // preco desejavel
-	MenorPreco       float64                  // menor preco admissivel
-	CapacidadeCarga  float64                  // capacidade de armazenamento
-	EnergiaGerada    float64                  // energia gerada
-	EnergiaFornecida float64                  // energia fornecida
-	DemandaInterna   float64                  // demanda interna
-	FazOferta        bool                     //variavel que indica se fornecedor fez uma oferta (se ==1)
-	Oferta           *quadromensagens.MsgMerc // variavel que armazena a oferta
+	Id               int     // id
+	PrecoDesejavel   float64 // preco desejavel
+	MenorPreco       float64 // menor preco admissivel
+	CapacidadeCarga  float64 // capacidade de armazenamento
+	EnergiaGerada    float64 // energia gerada
+	EnergiaFornecida float64 // energia fornecida
+	DemandaInterna   float64 // demanda interna
+	FazOferta        bool    //variavel que indica se fornecedor fez uma oferta
+	OfertaId         int     // id da oferta
 }
 
 func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de dados
@@ -31,6 +31,7 @@ func (c *Efornecedor) Inicia_Efornecedor() { // Inicialização da estrutura de 
 	c.DemandaInterna = GetRandFloat(1000, 1500)
 	c.CapacidadeCarga = c.EnergiaGerada - c.DemandaInterna
 	c.FazOferta = false
+	c.OfertaId = -1
 }
 
 func (c *Efornecedor) AtualizaCapacidaDeCarga(energia_fornecida float64) { // Atualizacao Capacidade de Carga
@@ -47,60 +48,72 @@ func GetRandFloat(min, max float64) float64 { //Gerador de num aleatorios float
 	return min + rand.Float64()*(max-min)
 }
 
-func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q quadromensagens.QuadroMsg) {
+func (c *Efornecedor) validaPropostaFeita(q *quadromensagens.QuadroMsg) {
+	oferta := q.Mensagem[c.OfertaId]
+	q.MensagemLock[c.OfertaId].Lock()
+	defer q.MensagemLock[c.OfertaId].Unlock()
+	if oferta.Status == quadromensagens.Aceite {
+		c.AtualizaCapacidaDeCarga(oferta.CapacidadeFornecimento)
+		oferta.Clean() //limpa oferta do aceite
+		c.FazOferta = false
+		c.OfertaId = -1
+		fmt.Println("\nFornecedor:", c.Id, "- Teve oferta Aceita") //print mostrando qual fornecedor teve oferta aceita
+	} else if oferta.Status == quadromensagens.Recusa { //se oferta é recusada
+		fmt.Println("\nFornecedor:", c.Id, "- Teve oferta Recusada") //print mostrando qual fornecedor teve oferta recusada
+		oferta.CleanFornecedor()                                     //limpa oferta do aceite
+		c.FazOferta = false
+		c.OfertaId = -1
+	}
+
+}
+
+func (c *Efornecedor) fazProposta(q *quadromensagens.QuadroMsg) {
+
+	for id, oferta := range q.Mensagem {
+		if oferta.Status == quadromensagens.Livre {
+			continue
+		}
+		q.MensagemLock[id].Lock()
+		if oferta.Status == quadromensagens.Oferta && oferta.CodigoFornecedor == -1 { //Valida se tem uma oferta do comprador
+			if oferta.DemandaSolicitada <= c.CapacidadeCarga && oferta.PrecoVenda <= c.PrecoDesejavel {
+				fmt.Printf("\nFornecedor %d mandou oferta para o comprador  %d", c.Id, oferta.CodigoComprador)
+				if c.CapacidadeCarga > oferta.DemandaSolicitada {
+					oferta.CapacidadeFornecimento = GetRandFloat(100.15, 130.60) //limita o fornecimento para um randfloat
+				} else {
+					oferta.CapacidadeFornecimento = c.CapacidadeCarga //fornecer o que tem, não a demanda solicitada
+				}
+				oferta.Status = quadromensagens.Proposta
+				oferta.CodigoFornecedor = c.Id
+				oferta.PrecoVenda = c.PrecoDesejavel
+				c.OfertaId = id
+				c.FazOferta = true
+				q.MensagemLock[id].Unlock()
+				return
+			}
+		}
+		q.MensagemLock[id].Unlock()
+	}
+}
+
+func (c *Efornecedor) WorkFornecedorOferta(ctx context.Context, q *quadromensagens.QuadroMsg) {
 	once := &sync.Once{} //Cria um type Once
 
+	rand.Seed(time.Now().UnixNano())
 	for {
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * time.Duration(rand.Float64()+1))
 		select {
 		case <-ctx.Done():
 			return
 		default:
-			if c.FazOferta { //Valida se fazoferta é igual a true
-				if c.Oferta.Status == quadromensagens.Aceite {
-					c.AtualizaCapacidaDeCarga(c.Oferta.CapacidadeFornecimento)
-					c.Oferta.Clean() //limpa oferta do aceite
-					c.FazOferta = false
-					fmt.Println("\nFornecedor:", c.Id, "- Teve oferta Aceita") //print mostrando qual fornecedor teve oferta aceita
-				} else if c.Oferta.Status == quadromensagens.Recusa { //se oferta é recusada
-					fmt.Println("\nFornecedor:", c.Id, "- Teve oferta Recusada") //print mostrando qual fornecedor teve oferta recusada
-					c.Oferta.Status = quadromensagens.Oferta                     //Oferta do Efornecedor seta como oferta
-					c.FazOferta = false
-					c.Oferta.Clean() //limpa oferta do aceite
-					c.Oferta.CodigoFornecedor = -1
-				}
-
-			} else {
-				for _, oferta := range q.Mensagem {
-					if oferta == nil {
-						continue
-					}
-
-					q.MuRW.Lock() //Locka o mutex para escrita
-
-					if oferta.Status == quadromensagens.Oferta && oferta.CodigoFornecedor == -1 { //Valida se tem uma oferta do comprador
-						fmt.Printf("\nFornecedor %d mandou oferta para o comprador  %d", c.Id, oferta.CodigoComprador)
-						if oferta.DemandaSolicitada <= c.CapacidadeCarga && oferta.PrecoVenda <= c.PrecoDesejavel {
-							if c.CapacidadeCarga > oferta.DemandaSolicitada {
-								oferta.CapacidadeFornecimento = 10 //limita o fornecimento para 100
-							} else {
-								oferta.CapacidadeFornecimento = c.CapacidadeCarga //fornecer o que tem, não a demanda solicitada
-							}
-							oferta.Status = quadromensagens.Proposta
-							oferta.CodigoFornecedor = c.Id
-							oferta.PrecoVenda = c.PrecoDesejavel
-							c.Oferta = oferta
-							c.FazOferta = true
-						}
-					}
-
-					q.MuRW.Unlock() //Unlock mutex
-				}
+			if c.FazOferta && c.OfertaId >= 0 { //Valida se fazoferta é igual a true
+				c.validaPropostaFeita(q) //Valida se a oferta foi aceita ou recusada
+			} else if c.OfertaId == -1 {
+				c.fazProposta(q) //Faz a proposta
 			}
+		}
 
-			if c.CapacidadeCarga <= (c.EnergiaGerada * 0.1) { //se a capacidade de carga for 10% menor que a energia gerada, ele atualiza o preco
-				once.Do(c.AtualizaPrecoDesejavel) //Onde.Do executa uma vez a atualização por "if"
-			}
+		if c.CapacidadeCarga <= (c.EnergiaGerada * 0.1) { //se a capacidade de carga for 10% menor que a energia gerada, ele atualiza o preco
+			once.Do(c.AtualizaPrecoDesejavel) //Onde.Do executa uma vez a atualização por "if"
 		}
 	}
 }
