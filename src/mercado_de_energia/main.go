@@ -64,10 +64,10 @@ func main() {
 				consumidor2.Inicia_EConsumidor()
 			}
 			fmt.Println("Iniciando simulação...")
-			quadro := quadromensagens.QuadroMsg{}                               //Cria um quadro
-			quadro.InicializaQmsg()                                             //Inicializa o quadro
-			ctx, _ := context.WithTimeout(context.Background(), 90*time.Second) //Cria um contexto de 120 segundos
-			go func() {                                                         //Thread pra debug
+			quadro := quadromensagens.QuadroMsg{}                                //Cria um quadro
+			quadro.InicializaQmsg()                                              //Inicializa o quadro
+			ctx, _ := context.WithTimeout(context.Background(), 120*time.Second) //Cria um contexto de 120 segundos
+			go func() {                                                          //Thread pra debug
 				for {
 					select {
 					case <-ctx.Done():

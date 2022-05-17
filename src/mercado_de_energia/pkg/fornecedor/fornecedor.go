@@ -76,7 +76,7 @@ func (c *Efornecedor) fazProposta(q *quadromensagens.QuadroMsg) {
 		q.MensagemLock[id].Lock()
 		if oferta.Status == quadromensagens.Oferta && oferta.CodigoFornecedor == -1 { //Valida se tem uma oferta do comprador
 			if oferta.DemandaSolicitada <= c.CapacidadeCarga && oferta.PrecoVenda <= c.PrecoDesejavel {
-				fmt.Printf("\nFornecedor %d mandou oferta para o comprador  %d", c.Id, oferta.CodigoComprador)
+				fmt.Printf("\nFornecedor %d mandou oferta para o comprador  %d\n", c.Id, oferta.CodigoComprador)
 				if c.CapacidadeCarga > oferta.DemandaSolicitada {
 					oferta.CapacidadeFornecimento = GetRandFloat(100.15, 130.60) //limita o fornecimento para um randfloat
 				} else {

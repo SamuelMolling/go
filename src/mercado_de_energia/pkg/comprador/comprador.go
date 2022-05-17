@@ -23,27 +23,27 @@ type EConsumidor struct {
 func (c *EConsumidor) Inicia_EConsumidor() {
 
 	c.OfertaAberta = false
-	fmt.Println("###########################")
-	fmt.Printf("Cadastrar dados Consumidor: %d\n", c.Id)
-	fmt.Println("###########################\n")
-	fmt.Print("Prazo de contrato do Consumidor [s]:")
-	valor := setValores()
-	c.PrazoContrato = int(valor)
-	fmt.Print("Demanda Consumidor [kW]:")
-	valor = setValores()
-	c.Demanda = valor
-	fmt.Print("Máximo preço admissível [R$/kW]:")
-	valor = setValores()
-	c.PrecoMaximo = valor
-	fmt.Print("Tarifa desejável [R$/kW]:")
-	valor = setValores()
-	c.TarifaDesejavel = valor
+	// fmt.Println("###########################")
+	// fmt.Printf("Cadastrar dados Consumidor: %d\n", c.Id)
+	// fmt.Println("###########################\n")
+	// fmt.Print("Prazo de contrato do Consumidor [s]:")
+	// valor := setValores()
+	// c.PrazoContrato = int(valor)
+	// fmt.Print("Demanda Consumidor [kW]:")
+	// valor = setValores()
+	// c.Demanda = valor
+	// fmt.Print("Máximo preço admissível [R$/kW]:")
+	// valor = setValores()
+	// c.PrecoMaximo = valor
+	// fmt.Print("Tarifa desejável [R$/kW]:")
+	// valor = setValores()
+	// c.TarifaDesejavel = valor
 
-	// rand.Seed(time.Now().UnixNano())
-	// c.PrazoContrato = 30 + rand.Intn(90)
-	// c.Demanda = rand.Float64() * 100
-	// c.PrecoMaximo = rand.Float64() * 100
-	// c.TarifaDesejavel = 80 + (rand.Float64() * 50)
+	rand.Seed(time.Now().UnixNano())
+	c.PrazoContrato = 30 + rand.Intn(90)
+	c.Demanda = 500 + rand.Float64()*100
+	c.PrecoMaximo = 80 + rand.Float64()*100
+	c.TarifaDesejavel = 80 + (rand.Float64() * 50)
 }
 
 func (c *EConsumidor) AtualizaPA() { //Atualiza preço máximo, caso o prazo esteja acabando
