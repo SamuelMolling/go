@@ -12,6 +12,7 @@ import (
 	"time"
 
 	screen "github.com/inancgumus/screen"
+	"github.com/jedib0t/go-pretty/text"
 	"github.com/jedib0t/go-pretty/v6/table"
 )
 
@@ -105,16 +106,36 @@ func main() {
 func printDbg(quadro *quadromensagens.QuadroMsg, consumidores []comprador.EConsumidor, fornecedores []fornecedor.Efornecedor) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
-
+	boxStyle := table.BoxStyle{
+		BottomLeft:       "╚",
+		BottomRight:      "╝",
+		BottomSeparator:  "╩",
+		EmptySeparator:   text.RepeatAndTrim(" ", text.RuneCount("╬")),
+		Left:             "║",
+		LeftSeparator:    "╠",
+		MiddleHorizontal: "═",
+		MiddleSeparator:  "╬",
+		MiddleVertical:   "║",
+		PaddingLeft:      " ",
+		PaddingRight:     " ",
+		PageSeparator:    "\n",
+		Right:            "║",
+		RightSeparator:   "╣",
+		TopLeft:          "╔",
+		TopRight:         "╗",
+		TopSeparator:     "╦",
+		UnfinishedRow:    " ≈",
+	}
+	t.Style().Box = boxStyle
 	t.AppendHeader(table.Row{"Id", "Prazo de Contrato [s]", "Demanda [kW]", "Preço Máximo [kW/R$]", "Tarifa Desejável [kW/R$]", "Oferta Aberta", "Oferta"})
 	for _, consumidor := range consumidores {
 		t.AppendRow([]interface{}{consumidor.Id, consumidor.PrazoContrato, toFixed(consumidor.Demanda, 2), toFixed(consumidor.PrecoMaximo, 2), toFixed(consumidor.TarifaDesejavel, 2), consumidor.OfertaAberta, consumidor.OfertaId})
 	}
-
 	t.Render()
 
 	t = table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
+	t.Style().Box = boxStyle
 
 	t.AppendHeader(table.Row{"Id", "Capacidade de Carga [kW]", "Energia Gerada [kW]", "Energia Fornecida [kW]", "Demanda Interna [kW]", "Preço Desejável [kW/R$]", "Faz Oferta", "Oferta"})
 	for _, fornecedor := range fornecedores {
@@ -125,6 +146,7 @@ func printDbg(quadro *quadromensagens.QuadroMsg, consumidores []comprador.EConsu
 
 	t = table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
+	t.Style().Box = boxStyle
 
 	t.AppendHeader(table.Row{"Oferta", "Codigo Fornecedor", "Preco Venda [kW/R$]", "Capacidade Fornecimento [kW]", "Codigo Comprador", "Demanda Solicitada [kW]", "Status"})
 	for id, msg := range quadro.Mensagem {
@@ -143,6 +165,27 @@ func printDbg(quadro *quadromensagens.QuadroMsg, consumidores []comprador.EConsu
 func exibeIntroducao() { //Função para exibir informações de introdução
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
+	boxStyle := table.BoxStyle{
+		BottomLeft:       "╚",
+		BottomRight:      "╝",
+		BottomSeparator:  "╩",
+		EmptySeparator:   text.RepeatAndTrim(" ", text.RuneCount("╬")),
+		Left:             "║",
+		LeftSeparator:    "╠",
+		MiddleHorizontal: "═",
+		MiddleSeparator:  "╬",
+		MiddleVertical:   "║",
+		PaddingLeft:      " ",
+		PaddingRight:     " ",
+		PageSeparator:    "\n",
+		Right:            "║",
+		RightSeparator:   "╣",
+		TopLeft:          "╔",
+		TopRight:         "╗",
+		TopSeparator:     "╦",
+		UnfinishedRow:    " ≈",
+	}
+	t.Style().Box = boxStyle
 	t.AppendHeader(table.Row{"Titulo", "Disciplina", "Versão", "Professora", "Nomes"})
 
 	t.AppendRow([]interface{}{"Mercado Livre de Energia", "Interfaceamento e Drivers", "1.0", "Bruna Fernandes Flesch", "Gabriel, Mauricio e Samuel"})
@@ -157,6 +200,27 @@ func exibeMenu() { //Função para exibir opções do menu
 		"Executar simulação"}
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
+	boxStyle := table.BoxStyle{
+		BottomLeft:       "╚",
+		BottomRight:      "╝",
+		BottomSeparator:  "╩",
+		EmptySeparator:   text.RepeatAndTrim(" ", text.RuneCount("╬")),
+		Left:             "║",
+		LeftSeparator:    "╠",
+		MiddleHorizontal: "═",
+		MiddleSeparator:  "╬",
+		MiddleVertical:   "║",
+		PaddingLeft:      " ",
+		PaddingRight:     " ",
+		PageSeparator:    "\n",
+		Right:            "║",
+		RightSeparator:   "╣",
+		TopLeft:          "╔",
+		TopRight:         "╗",
+		TopSeparator:     "╦",
+		UnfinishedRow:    " ≈",
+	}
+	t.Style().Box = boxStyle
 	t.AppendHeader(table.Row{"Opção", "Descrição"})
 	for i := 0; i < 4; i++ {
 		t.AppendRow([]interface{}{i, descrição[i]})
@@ -175,6 +239,27 @@ func leComando() int { //Função para salvar a opção desejada do menu
 func printFornecedor(fornecedores []fornecedor.Efornecedor) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
+	boxStyle := table.BoxStyle{
+		BottomLeft:       "╚",
+		BottomRight:      "╝",
+		BottomSeparator:  "╩",
+		EmptySeparator:   text.RepeatAndTrim(" ", text.RuneCount("╬")),
+		Left:             "║",
+		LeftSeparator:    "╠",
+		MiddleHorizontal: "═",
+		MiddleSeparator:  "╬",
+		MiddleVertical:   "║",
+		PaddingLeft:      " ",
+		PaddingRight:     " ",
+		PageSeparator:    "\n",
+		Right:            "║",
+		RightSeparator:   "╣",
+		TopLeft:          "╔",
+		TopRight:         "╗",
+		TopSeparator:     "╦",
+		UnfinishedRow:    " ≈",
+	}
+	t.Style().Box = boxStyle
 	t.AppendHeader(table.Row{"Id", "Capacidade de Carga", "Energia Gerada", "Energia Fornecida", "Demanda Interna", "Preço Desejável"})
 	for _, fornecedor := range fornecedores {
 		t.AppendRow([]interface{}{fornecedor.Id, toFixed(fornecedor.CapacidadeCarga, 2), toFixed(fornecedor.EnergiaGerada, 2), toFixed(fornecedor.EnergiaFornecida, 2), toFixed(fornecedor.DemandaInterna, 2), toFixed(fornecedor.PrecoDesejavel, 2)})
@@ -185,6 +270,27 @@ func printFornecedor(fornecedores []fornecedor.Efornecedor) {
 func printConsumidor(consumidores []comprador.EConsumidor) {
 	t := table.NewWriter()
 	t.SetOutputMirror(os.Stdout)
+	boxStyle := table.BoxStyle{
+		BottomLeft:       "╚",
+		BottomRight:      "╝",
+		BottomSeparator:  "╩",
+		EmptySeparator:   text.RepeatAndTrim(" ", text.RuneCount("╬")),
+		Left:             "║",
+		LeftSeparator:    "╠",
+		MiddleHorizontal: "═",
+		MiddleSeparator:  "╬",
+		MiddleVertical:   "║",
+		PaddingLeft:      " ",
+		PaddingRight:     " ",
+		PageSeparator:    "\n",
+		Right:            "║",
+		RightSeparator:   "╣",
+		TopLeft:          "╔",
+		TopRight:         "╗",
+		TopSeparator:     "╦",
+		UnfinishedRow:    " ≈",
+	}
+	t.Style().Box = boxStyle
 	t.AppendHeader(table.Row{"Id", "Prazo de contrato [s]", "Demanda Consumidor [kW]", "Máximo preço admissível [R$/kW]", "Tarifa desejável [R$/kW]"})
 	for _, consumidor := range consumidores {
 		t.AppendRow([]interface{}{consumidor.Id, consumidor.PrazoContrato, toFixed(consumidor.Demanda, 2), toFixed(consumidor.PrecoMaximo, 2), toFixed(consumidor.TarifaDesejavel, 2)})

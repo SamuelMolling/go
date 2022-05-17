@@ -9,13 +9,13 @@ import (
 )
 
 type EConsumidor struct {
-	Id              int     // id
-	TarifaDesejavel float64 // tarifa desejavel
-	PrecoMaximo     float64 // maximo preco admissivel
-	PrazoContrato   int     // prazo do contrato do cliente
-	Demanda         float64 // demanda do cliente
-	OfertaAberta    bool    // oferta aberta
-	OfertaId        int
+	Id              int                        // id
+	TarifaDesejavel float64                    // tarifa desejavel
+	PrecoMaximo     float64                    // maximo preco admissivel
+	PrazoContrato   int                        // prazo do contrato do cliente
+	Demanda         float64                    // demanda do cliente
+	OfertaAberta    bool                       // oferta aberta
+	OfertaId        int                        //Id da oferta
 	Quadro          *quadromensagens.QuadroMsg // quadro
 }
 
@@ -125,10 +125,10 @@ func (c *EConsumidor) WorkConsumidor(ctx context.Context, q *quadromensagens.Qua
 	c.Quadro = q
 
 	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	defer cancel() //LIFO
 
 	terminoContrato := time.NewTimer(time.Second * time.Duration(c.PrazoContrato))
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(time.Now().UnixNano()) //Sleep aleatorio pra não ter race
 	for {
 		time.Sleep(time.Second * time.Duration(rand.Float64()+1))
 
